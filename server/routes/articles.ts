@@ -1,6 +1,11 @@
 import { RequestHandler } from "express";
 import { z } from "zod";
-import { getArticles, database, getCommentsByArticle } from "../data/database";
+import {
+  getArticles,
+  database,
+  getCommentsByArticle,
+  Article,
+} from "../data/database";
 import { AuthRequest } from "../middleware/auth";
 
 // Validation schemas
