@@ -46,6 +46,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAdmin, Game } from "@/contexts/AdminContext";
 import { useUserManagement } from "@/contexts/UserManagementContext";
 import {
@@ -64,7 +65,32 @@ import {
   Crown,
   Ban,
   CheckCircle,
+  Newspaper,
+  PinIcon,
+  TrendingUp,
+  Eye,
+  MessageCircle,
+  Image,
+  FileText,
+  Tag,
 } from "lucide-react";
+
+interface Article {
+  id: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  author: string;
+  publishedAt: string;
+  status: "draft" | "published" | "featured";
+  isPinned: boolean;
+  isTrending: boolean;
+  views: number;
+  comments: number;
+  imageUrl?: string;
+  isNepal: boolean;
+}
 
 const Admin = () => {
   const {
@@ -87,10 +113,49 @@ const Admin = () => {
     getAdminUsers,
     getBannedUsers,
   } = useUserManagement();
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  // News Management State
+  const [articles, setArticles] = useState<Article[]>([
+    {
+      id: "1",
+      title: "Nepal Cricket Team Announces Squad for ACC Premier Cup",
+      excerpt:
+        "Captain Rohit Paudel leads 15-member squad for regional championship",
+      content: "Full article content...",
+      category: "Cricket",
+      author: "Rajesh Shrestha",
+      publishedAt: "2024-01-19T10:00:00Z",
+      status: "featured",
+      isPinned: true,
+      isTrending: true,
+      views: 12500,
+      comments: 45,
+      isNepal: true,
+    },
+    {
+      id: "2",
+      title: "Premier League Title Race Analysis",
+      excerpt: "Manchester City and Arsenal battle for the championship",
+      content: "Full article content...",
+      category: "Football",
+      author: "Sarah Wilson",
+      publishedAt: "2024-01-18T14:30:00Z",
+      status: "published",
+      isPinned: false,
+      isTrending: true,
+      views: 8900,
+      comments: 23,
+      isNepal: false,
+    },
+  ]);
+
+  const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useState(false);
+  const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useState(false);
+  const [isAddArticleDialogOpen, setIsAddArticleDialogOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
-  const [formData, setFormData] = useState<Partial<Game>>({
+  const [editingArticle, setEditingArticle] = useState<Article | null>(null);
+
+  const [gameFormData, setGameFormData] = useState<Partial<Game>>({
     homeTeam: "",
     awayTeam: "",
     league: "",
@@ -100,12 +165,18 @@ const Admin = () => {
     status: "upcoming",
     venue: "",
     description: "",
-    odds: {
-      homeWin: 0,
-      awayWin: 0,
-      draw: 0,
-      overUnder: 0,
-    },
+  });
+
+  const [articleFormData, setArticleFormData] = useState<Partial<Article>>({
+    title: "",
+    excerpt: "",
+    content: "",
+    category: "",
+    author: "",
+    status: "draft",
+    isPinned: false,
+    isTrending: false,
+    isNepal: false,
   });
 
   const sports = [
@@ -115,43 +186,78 @@ const Admin = () => {
     "Volleyball",
     "Tennis",
     "Badminton",
-    "Boxing",
   ];
-  const leagues = {
-    Cricket: [
-      "Nepal Premier League (Cricket)",
-      "ACC Premier Cup",
-      "SAFF Championship",
-      "IPL",
-      "World Cup",
-      "Asia Cup",
-      "Everest Premier League",
-    ],
-    Football: [
-      "Nepal Premier League",
-      "SAFF Championship",
-      "AFC Challenge Cup",
-      "Premier League",
-      "La Liga",
-      "Champions League",
-      "Martyrs Memorial League",
-    ],
-    Basketball: ["NBA", "Nepal Basketball League", "FIBA Asia Cup"],
-    Volleyball: ["Nepal Volleyball League", "Asian Championship"],
-    Tennis: ["ATP", "WTA", "Grand Slam", "Nepal Open"],
-    Badminton: ["All Nepal Championship", "BWF", "Thomas Cup"],
-    Boxing: ["Nepal Boxing Championship", "AIBA", "Olympics"],
+  const newsCategories = [
+    "Nepal Cricket",
+    "Nepal Football",
+    "International Football",
+    "International Cricket",
+    "Basketball",
+    "Tennis",
+    "Volleyball",
+    "Olympics",
+    "Transfers",
+    "Tournaments",
+  ];
+
+  const handleAddArticle = () => {
+    if (articleFormData.title && articleFormData.content) {
+      const newArticle: Article = {
+        ...articleFormData,
+        id: Date.now().toString(),
+        publishedAt: new Date().toISOString(),
+        views: 0,
+        comments: 0,
+      } as Article;
+      setArticles([newArticle, ...articles]);
+      setArticleFormData({
+        title: "",
+        excerpt: "",
+        content: "",
+        category: "",
+        author: "",
+        status: "draft",
+        isPinned: false,
+        isTrending: false,
+        isNepal: false,
+      });
+      setIsAddArticleDialogOpen(false);
+    }
+  };
+
+  const handleDeleteArticle = (id: string) => {
+    setArticles(articles.filter((article) => article.id !== id));
+  };
+
+  const togglePinArticle = (id: string) => {
+    setArticles(
+      articles.map((article) =>
+        article.id === id
+          ? { ...article, isPinned: !article.isPinned }
+          : article,
+      ),
+    );
+  };
+
+  const toggleTrendingArticle = (id: string) => {
+    setArticles(
+      articles.map((article) =>
+        article.id === id
+          ? { ...article, isTrending: !article.isTrending }
+          : article,
+      ),
+    );
   };
 
   const handleAddGame = () => {
     if (
-      formData.homeTeam &&
-      formData.awayTeam &&
-      formData.league &&
-      formData.sport
+      gameFormData.homeTeam &&
+      gameFormData.awayTeam &&
+      gameFormData.league &&
+      gameFormData.sport
     ) {
-      addGame(formData as Omit<Game, "id">);
-      setFormData({
+      addGame(gameFormData as Omit<Game, "id">);
+      setGameFormData({
         homeTeam: "",
         awayTeam: "",
         league: "",
@@ -161,48 +267,18 @@ const Admin = () => {
         status: "upcoming",
         venue: "",
         description: "",
-        odds: { homeWin: 0, awayWin: 0, draw: 0, overUnder: 0 },
       });
-      setIsAddDialogOpen(false);
-    }
-  };
-
-  const handleEditGame = () => {
-    if (editingGame && formData.homeTeam && formData.awayTeam) {
-      updateGame(editingGame.id, formData);
-      setIsEditDialogOpen(false);
-      setEditingGame(null);
-    }
-  };
-
-  const handleDeleteGame = (id: string) => {
-    deleteGame(id);
-  };
-
-  const openEditDialog = (game: Game) => {
-    setEditingGame(game);
-    setFormData(game);
-    setIsEditDialogOpen(true);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "upcoming":
-        return "bg-blue-500";
-      case "live":
-        return "bg-green-500";
-      case "completed":
-        return "bg-gray-500";
-      default:
-        return "bg-gray-500";
+      setIsAddGameDialogOpen(false);
     }
   };
 
   const stats = [
     {
-      title: "Total Games",
-      value: games.length.toString(),
-      icon: Trophy,
+      title: "Published Articles",
+      value: articles
+        .filter((a) => a.status === "published" || a.status === "featured")
+        .length.toString(),
+      icon: Newspaper,
       color: "text-scoreguff-blue",
     },
     {
@@ -212,15 +288,15 @@ const Admin = () => {
       color: "text-green-600",
     },
     {
-      title: "Admins",
-      value: getAdminUsers().length.toString(),
-      icon: Shield,
+      title: "Total Fixtures",
+      value: games.length.toString(),
+      icon: Calendar,
       color: "text-purple-600",
     },
     {
-      title: "Live Games",
-      value: getLiveGames().length.toString(),
-      icon: Clock,
+      title: "Admin Users",
+      value: getAdminUsers().length.toString(),
+      icon: Shield,
       color: "text-orange-600",
     },
   ];
@@ -234,214 +310,13 @@ const Admin = () => {
             <h1 className="text-4xl font-bold flex items-center gap-3 mb-2">
               <Shield className="h-10 w-10 text-scoreguff-blue" />
               <span className="bg-scoreguff-gradient bg-clip-text text-transparent">
-                Admin Panel
+                News Admin Panel
               </span>
             </h1>
             <p className="text-muted-foreground text-lg">
-              Manage games, predictions, and platform settings
+              Manage articles, fixtures, and platform content
             </p>
           </div>
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-scoreguff-blue hover:bg-scoreguff-blue/90 mt-4 md:mt-0">
-                <Plus className="h-4 w-4 mr-2" />
-                Add New Game
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Add New Game</DialogTitle>
-                <DialogDescription>
-                  Create a new game for users to make predictions on
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="homeTeam">Home Team</Label>
-                  <Input
-                    id="homeTeam"
-                    value={formData.homeTeam}
-                    onChange={(e) =>
-                      setFormData({ ...formData, homeTeam: e.target.value })
-                    }
-                    placeholder="Enter home team"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="awayTeam">Away Team</Label>
-                  <Input
-                    id="awayTeam"
-                    value={formData.awayTeam}
-                    onChange={(e) =>
-                      setFormData({ ...formData, awayTeam: e.target.value })
-                    }
-                    placeholder="Enter away team"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="sport">Sport</Label>
-                  <Select
-                    value={formData.sport}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, sport: value, league: "" })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select sport" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {sports.map((sport) => (
-                        <SelectItem key={sport} value={sport}>
-                          {sport}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="league">League</Label>
-                  <Select
-                    value={formData.league}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, league: value })
-                    }
-                    disabled={!formData.sport}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select league" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {formData.sport &&
-                        leagues[formData.sport as keyof typeof leagues]?.map(
-                          (league) => (
-                            <SelectItem key={league} value={league}>
-                              {league}
-                            </SelectItem>
-                          ),
-                        )}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="matchDate">Match Date</Label>
-                  <Input
-                    id="matchDate"
-                    type="date"
-                    value={formData.matchDate}
-                    onChange={(e) =>
-                      setFormData({ ...formData, matchDate: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="matchTime">Match Time</Label>
-                  <Input
-                    id="matchTime"
-                    type="time"
-                    value={formData.matchTime}
-                    onChange={(e) =>
-                      setFormData({ ...formData, matchTime: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="venue">Venue</Label>
-                  <Input
-                    id="venue"
-                    value={formData.venue}
-                    onChange={(e) =>
-                      setFormData({ ...formData, venue: e.target.value })
-                    }
-                    placeholder="Enter venue"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="status">Status</Label>
-                  <Select
-                    value={formData.status}
-                    onValueChange={(value) =>
-                      setFormData({
-                        ...formData,
-                        status: value as Game["status"],
-                      })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="upcoming">Upcoming</SelectItem>
-                      <SelectItem value="live">Live</SelectItem>
-                      <SelectItem value="completed">Completed</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="md:col-span-2 space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) =>
-                      setFormData({ ...formData, description: e.target.value })
-                    }
-                    placeholder="Enter game description"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="homeWin">Home Win Odds</Label>
-                  <Input
-                    id="homeWin"
-                    type="number"
-                    step="0.1"
-                    value={formData.odds?.homeWin}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        odds: {
-                          ...formData.odds,
-                          homeWin: parseFloat(e.target.value),
-                        },
-                      })
-                    }
-                    placeholder="1.85"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="awayWin">Away Win Odds</Label>
-                  <Input
-                    id="awayWin"
-                    type="number"
-                    step="0.1"
-                    value={formData.odds?.awayWin}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        odds: {
-                          ...formData.odds,
-                          awayWin: parseFloat(e.target.value),
-                        },
-                      })
-                    }
-                    placeholder="2.10"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsAddDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleAddGame}
-                  className="bg-scoreguff-blue hover:bg-scoreguff-blue/90"
-                >
-                  Add Game
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
         </div>
 
         {/* Stats Cards */}
@@ -455,7 +330,7 @@ const Admin = () => {
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   {stat.title}
                 </CardTitle>
-                <stat.icon className="h-5 w-5 text-scoreguff-blue" />
+                <stat.icon className={`h-5 w-5 ${stat.color}`} />
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-foreground">
@@ -466,214 +341,552 @@ const Admin = () => {
           ))}
         </div>
 
-        {/* User Management Section */}
-        <Card className="border-2 mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <UserCheck className="h-5 w-5 text-scoreguff-blue" />
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="news" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="news" className="flex items-center gap-2">
+              <Newspaper className="h-4 w-4" />
+              News Management
+            </TabsTrigger>
+            <TabsTrigger value="fixtures" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Match Center
+            </TabsTrigger>
+            <TabsTrigger value="users" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
               User Management
-            </CardTitle>
-            <CardDescription>
-              Manage user accounts, roles, and permissions
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Stats</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium">{user.name}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {user.email}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Joined: {user.joinedDate}
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          className={
-                            user.role === "admin"
-                              ? "bg-purple-500 text-white"
-                              : "bg-blue-500 text-white"
-                          }
-                        >
-                          {user.role === "admin" && (
-                            <Crown className="h-3 w-3 mr-1" />
-                          )}
-                          {user.role.toUpperCase()}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          className={
-                            user.status === "active"
-                              ? "bg-green-500 text-white"
-                              : user.status === "banned"
-                                ? "bg-red-500 text-white"
-                                : "bg-gray-500 text-white"
-                          }
-                        >
-                          {user.status === "active" && (
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                          )}
-                          {user.status === "banned" && (
-                            <Ban className="h-3 w-3 mr-1" />
-                          )}
-                          {user.status.toUpperCase()}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-sm">{user.location}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          <div>Predictions: {user.totalPredictions}</div>
-                          <div>Accuracy: {user.accuracy}%</div>
-                          <div>
-                            Winnings: NPR {user.totalWinnings.toLocaleString()}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2 flex-wrap">
-                          {user.role === "user" ? (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => promoteToAdmin(user.id)}
-                              className="text-purple-600 border-purple-600 hover:bg-purple-600 hover:text-white"
-                            >
-                              <Crown className="h-4 w-4" />
-                            </Button>
-                          ) : (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => demoteToUser(user.id)}
-                              className="text-blue-600 border-blue-600 hover:bg-blue-600 hover:text-white"
-                            >
-                              <UserCheck className="h-4 w-4" />
-                            </Button>
-                          )}
-                          {user.status === "active" ? (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => banUser(user.id)}
-                              className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
-                            >
-                              <Ban className="h-4 w-4" />
-                            </Button>
-                          ) : (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => unbanUser(user.id)}
-                              className="text-green-600 border-green-600 hover:bg-green-600 hover:text-white"
-                            >
-                              <CheckCircle className="h-4 w-4" />
-                            </Button>
-                          )}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Games Management */}
-        <Card className="border-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-scoreguff-blue" />
-              Games Management
-            </CardTitle>
-            <CardDescription>
-              Manage all games available for predictions
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Match</TableHead>
-                    <TableHead>League</TableHead>
-                    <TableHead>Date & Time</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Venue</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {games.map((game) => (
-                    <TableRow key={game.id}>
-                      <TableCell>
-                        <div>
-                          <p className="font-medium">
-                            {game.homeTeam} vs {game.awayTeam}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {game.sport}
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{game.league}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-col">
-                          <span className="text-sm">{game.matchDate}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {game.matchTime}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          className={`${getStatusColor(game.status)} text-white`}
-                        >
-                          {game.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3 text-muted-foreground" />
-                          <span className="text-sm">{game.venue || "TBD"}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => openEditDialog(game)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
+          {/* News Management Tab */}
+          <TabsContent value="news" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">News Articles</h2>
+              <Dialog
+                open={isAddArticleDialogOpen}
+                onOpenChange={setIsAddArticleDialogOpen}
+              >
+                <DialogTrigger asChild>
+                  <Button className="bg-scoreguff-blue hover:bg-scoreguff-blue/90">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Article
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Create New Article</DialogTitle>
+                    <DialogDescription>
+                      Add a new sports news article to the platform
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="articleTitle">Article Title</Label>
+                      <Input
+                        id="articleTitle"
+                        value={articleFormData.title}
+                        onChange={(e) =>
+                          setArticleFormData({
+                            ...articleFormData,
+                            title: e.target.value,
+                          })
+                        }
+                        placeholder="Enter article title"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="articleCategory">Category</Label>
+                      <Select
+                        value={articleFormData.category}
+                        onValueChange={(value) =>
+                          setArticleFormData({
+                            ...articleFormData,
+                            category: value,
+                          })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {newsCategories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="articleAuthor">Author</Label>
+                      <Input
+                        id="articleAuthor"
+                        value={articleFormData.author}
+                        onChange={(e) =>
+                          setArticleFormData({
+                            ...articleFormData,
+                            author: e.target.value,
+                          })
+                        }
+                        placeholder="Author name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="articleStatus">Status</Label>
+                      <Select
+                        value={articleFormData.status}
+                        onValueChange={(value) =>
+                          setArticleFormData({
+                            ...articleFormData,
+                            status: value as Article["status"],
+                          })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="draft">Draft</SelectItem>
+                          <SelectItem value="published">Published</SelectItem>
+                          <SelectItem value="featured">Featured</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="md:col-span-2 space-y-2">
+                      <Label htmlFor="articleExcerpt">Excerpt</Label>
+                      <Textarea
+                        id="articleExcerpt"
+                        value={articleFormData.excerpt}
+                        onChange={(e) =>
+                          setArticleFormData({
+                            ...articleFormData,
+                            excerpt: e.target.value,
+                          })
+                        }
+                        placeholder="Article excerpt/summary"
+                        rows={2}
+                      />
+                    </div>
+                    <div className="md:col-span-2 space-y-2">
+                      <Label htmlFor="articleContent">Article Content</Label>
+                      <Textarea
+                        id="articleContent"
+                        value={articleFormData.content}
+                        onChange={(e) =>
+                          setArticleFormData({
+                            ...articleFormData,
+                            content: e.target.value,
+                          })
+                        }
+                        placeholder="Full article content"
+                        rows={8}
+                      />
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="isNepal"
+                        checked={articleFormData.isNepal}
+                        onChange={(e) =>
+                          setArticleFormData({
+                            ...articleFormData,
+                            isNepal: e.target.checked,
+                          })
+                        }
+                      />
+                      <Label htmlFor="isNepal">Nepal-focused article</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="isPinned"
+                        checked={articleFormData.isPinned}
+                        onChange={(e) =>
+                          setArticleFormData({
+                            ...articleFormData,
+                            isPinned: e.target.checked,
+                          })
+                        }
+                      />
+                      <Label htmlFor="isPinned">Pin to homepage</Label>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsAddArticleDialogOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleAddArticle}
+                      className="bg-scoreguff-blue hover:bg-scoreguff-blue/90"
+                    >
+                      Publish Article
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <Card className="border-2">
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Article</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Engagement</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {articles.map((article) => (
+                        <TableRow key={article.id}>
+                          <TableCell>
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                <p className="font-medium">{article.title}</p>
+                                {article.isPinned && (
+                                  <PinIcon className="h-4 w-4 text-scoreguff-blue" />
+                                )}
+                                {article.isTrending && (
+                                  <TrendingUp className="h-4 w-4 text-orange-500" />
+                                )}
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                By {article.author}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(
+                                  article.publishedAt,
+                                ).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={
+                                article.isNepal
+                                  ? "bg-red-600 text-white"
+                                  : "bg-scoreguff-blue text-white"
+                              }
+                            >
+                              {article.isNepal ? "🇳🇵" : "🌍"} {article.category}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={
+                                article.status === "featured"
+                                  ? "bg-scoreguff-gold text-white"
+                                  : article.status === "published"
+                                    ? "bg-green-500 text-white"
+                                    : "bg-gray-500 text-white"
+                              }
+                            >
+                              {article.status.toUpperCase()}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-1">
+                                <Eye className="h-3 w-3" />
+                                <span className="text-sm">
+                                  {article.views.toLocaleString()}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <MessageCircle className="h-3 w-3" />
+                                <span className="text-sm">
+                                  {article.comments}
+                                </span>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => togglePinArticle(article.id)}
+                                className={
+                                  article.isPinned
+                                    ? "text-scoreguff-blue border-scoreguff-blue"
+                                    : ""
+                                }
+                              >
+                                <PinIcon className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  toggleTrendingArticle(article.id)
+                                }
+                                className={
+                                  article.isTrending
+                                    ? "text-orange-500 border-orange-500"
+                                    : ""
+                                }
+                              >
+                                <TrendingUp className="h-4 w-4" />
+                              </Button>
+                              <Button variant="outline" size="sm">
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-destructive"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                      Delete Article
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to delete this
+                                      article? This action cannot be undone.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                      Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() =>
+                                        handleDeleteArticle(article.id)
+                                      }
+                                      className="bg-destructive hover:bg-destructive/90"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Match Center Tab */}
+          <TabsContent value="fixtures" className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold">Match Fixtures</h2>
+              <Dialog
+                open={isAddGameDialogOpen}
+                onOpenChange={setIsAddGameDialogOpen}
+              >
+                <DialogTrigger asChild>
+                  <Button className="bg-scoreguff-blue hover:bg-scoreguff-blue/90">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Match
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>Add New Match</DialogTitle>
+                    <DialogDescription>
+                      Create a new match fixture for the platform
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Home Team</Label>
+                      <Input
+                        value={gameFormData.homeTeam}
+                        onChange={(e) =>
+                          setGameFormData({
+                            ...gameFormData,
+                            homeTeam: e.target.value,
+                          })
+                        }
+                        placeholder="Enter home team"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Away Team</Label>
+                      <Input
+                        value={gameFormData.awayTeam}
+                        onChange={(e) =>
+                          setGameFormData({
+                            ...gameFormData,
+                            awayTeam: e.target.value,
+                          })
+                        }
+                        placeholder="Enter away team"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Sport</Label>
+                      <Select
+                        value={gameFormData.sport}
+                        onValueChange={(value) =>
+                          setGameFormData({ ...gameFormData, sport: value })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select sport" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {sports.map((sport) => (
+                            <SelectItem key={sport} value={sport}>
+                              {sport}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>League</Label>
+                      <Input
+                        value={gameFormData.league}
+                        onChange={(e) =>
+                          setGameFormData({
+                            ...gameFormData,
+                            league: e.target.value,
+                          })
+                        }
+                        placeholder="Enter league name"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Date</Label>
+                      <Input
+                        type="date"
+                        value={gameFormData.matchDate}
+                        onChange={(e) =>
+                          setGameFormData({
+                            ...gameFormData,
+                            matchDate: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Time</Label>
+                      <Input
+                        type="time"
+                        value={gameFormData.matchTime}
+                        onChange={(e) =>
+                          setGameFormData({
+                            ...gameFormData,
+                            matchTime: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="md:col-span-2 space-y-2">
+                      <Label>Venue</Label>
+                      <Input
+                        value={gameFormData.venue}
+                        onChange={(e) =>
+                          setGameFormData({
+                            ...gameFormData,
+                            venue: e.target.value,
+                          })
+                        }
+                        placeholder="Match venue"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsAddGameDialogOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleAddGame}
+                      className="bg-scoreguff-blue hover:bg-scoreguff-blue/90"
+                    >
+                      Add Match
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            <Card className="border-2">
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Match</TableHead>
+                        <TableHead>League</TableHead>
+                        <TableHead>Date & Time</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Venue</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {games.map((game) => (
+                        <TableRow key={game.id}>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium">
+                                {game.homeTeam} vs {game.awayTeam}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                {game.sport}
+                              </p>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{game.league}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div>
+                              <span className="text-sm">{game.matchDate}</span>
+                              <br />
+                              <span className="text-xs text-muted-foreground">
+                                {game.matchTime}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={
+                                game.status === "live"
+                                  ? "bg-green-500 text-white animate-pulse"
+                                  : game.status === "upcoming"
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-gray-500 text-white"
+                              }
+                            >
+                              {game.status.toUpperCase()}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3 text-muted-foreground" />
+                              <span className="text-sm">
+                                {game.venue || "TBD"}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                              <Button variant="outline" size="sm">
+                                <Edit className="h-4 w-4" />
+                              </Button>
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -681,114 +894,150 @@ const Admin = () => {
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Game</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Are you sure you want to delete this game?
-                                  This action cannot be undone.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => handleDeleteGame(game.id)}
-                                  className="bg-destructive hover:bg-destructive/90"
-                                >
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        {/* Edit Dialog */}
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Edit Game</DialogTitle>
-              <DialogDescription>
-                Update game information and settings
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="editHomeTeam">Home Team</Label>
-                <Input
-                  id="editHomeTeam"
-                  value={formData.homeTeam}
-                  onChange={(e) =>
-                    setFormData({ ...formData, homeTeam: e.target.value })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="editAwayTeam">Away Team</Label>
-                <Input
-                  id="editAwayTeam"
-                  value={formData.awayTeam}
-                  onChange={(e) =>
-                    setFormData({ ...formData, awayTeam: e.target.value })
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="editStatus">Status</Label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(value) =>
-                    setFormData({
-                      ...formData,
-                      status: value as Game["status"],
-                    })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="upcoming">Upcoming</SelectItem>
-                    <SelectItem value="live">Live</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="editVenue">Venue</Label>
-                <Input
-                  id="editVenue"
-                  value={formData.venue}
-                  onChange={(e) =>
-                    setFormData({ ...formData, venue: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setIsEditDialogOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleEditGame}
-                className="bg-scoreguff-blue hover:bg-scoreguff-blue/90"
-              >
-                Update Game
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+          {/* User Management Tab */}
+          <TabsContent value="users" className="space-y-6">
+            <h2 className="text-2xl font-bold">User Management</h2>
+
+            <Card className="border-2">
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>User</TableHead>
+                        <TableHead>Role</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead>Activity</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {users.map((user) => (
+                        <TableRow key={user.id}>
+                          <TableCell>
+                            <div>
+                              <p className="font-medium">{user.name}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {user.email}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                Joined: {user.joinedDate}
+                              </p>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={
+                                user.role === "admin"
+                                  ? "bg-purple-500 text-white"
+                                  : "bg-blue-500 text-white"
+                              }
+                            >
+                              {user.role === "admin" && (
+                                <Crown className="h-3 w-3 mr-1" />
+                              )}
+                              {user.role.toUpperCase()}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={
+                                user.status === "active"
+                                  ? "bg-green-500 text-white"
+                                  : user.status === "banned"
+                                    ? "bg-red-500 text-white"
+                                    : "bg-gray-500 text-white"
+                              }
+                            >
+                              {user.status === "active" && (
+                                <CheckCircle className="h-3 w-3 mr-1" />
+                              )}
+                              {user.status === "banned" && (
+                                <Ban className="h-3 w-3 mr-1" />
+                              )}
+                              {user.status.toUpperCase()}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3 text-muted-foreground" />
+                              <span className="text-sm">{user.location}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="text-sm">
+                              <div>
+                                Comments: {Math.floor(Math.random() * 50)}
+                              </div>
+                              <div>
+                                Articles Read: {Math.floor(Math.random() * 200)}
+                              </div>
+                              <div>Last Login: {user.lastLogin}</div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                              {user.role === "user" ? (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => promoteToAdmin(user.id)}
+                                  className="text-purple-600 border-purple-600 hover:bg-purple-600 hover:text-white"
+                                >
+                                  <Crown className="h-4 w-4" />
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => demoteToUser(user.id)}
+                                  className="text-blue-600 border-blue-600 hover:bg-blue-600 hover:text-white"
+                                >
+                                  <UserCheck className="h-4 w-4" />
+                                </Button>
+                              )}
+                              {user.status === "active" ? (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => banUser(user.id)}
+                                  className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
+                                >
+                                  <Ban className="h-4 w-4" />
+                                </Button>
+                              ) : (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => unbanUser(user.id)}
+                                  className="text-green-600 border-green-600 hover:bg-green-600 hover:text-white"
+                                >
+                                  <CheckCircle className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
