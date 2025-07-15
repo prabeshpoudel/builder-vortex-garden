@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdmin } from "@/contexts/AdminContext";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,95 +20,107 @@ import {
   ArrowRight,
   CheckCircle,
   Play,
+  Globe,
+  MapPin,
+  Clock,
+  Zap,
 } from "lucide-react";
 
 export default function Index() {
   const { isAuthenticated } = useAuth();
+  const { getUpcomingGames, getLiveGames } = useAdmin();
+
+  const upcomingGames = getUpcomingGames().slice(0, 3);
+  const liveGames = getLiveGames().slice(0, 2);
+
   const features = [
     {
       icon: Target,
       title: "AI-Powered Predictions",
       description:
-        "Advanced machine learning algorithms analyze thousands of data points to provide accurate sports predictions.",
+        "Advanced algorithms analyze cricket, football, and international sports data for Nepal's most accurate predictions.",
     },
     {
       icon: TrendingUp,
-      title: "Real-Time Analytics",
+      title: "Real-Time Nepal Sports",
       description:
-        "Track market movements, odds changes, and betting trends as they happen across all major sportsbooks.",
+        "Track Nepal national team, domestic leagues, and international tournaments as they happen.",
     },
     {
       icon: BarChart3,
-      title: "Performance Tracking",
+      title: "Performance Analytics",
       description:
-        "Monitor your prediction accuracy, ROI, and detailed statistics with comprehensive analytics dashboard.",
+        "Monitor your prediction accuracy with detailed statistics and ROI tracking in NPR.",
     },
     {
       icon: Users,
-      title: "Community Insights",
+      title: "Nepal Sports Community",
       description:
-        "Join thousands of sports bettors sharing insights, strategies, and profitable prediction models.",
+        "Join thousands of Nepali sports fans sharing insights on cricket, football, and global sports.",
     },
   ];
 
-  const stats = [
-    { number: "87.3%", label: "Average Accuracy" },
-    { number: "15K+", label: "Active Users" },
-    { number: "$2.4M", label: "Total Winnings" },
-    { number: "25+", label: "Sports Covered" },
+  const nepalStats = [
+    { number: "92.1%", label: "Cricket Accuracy", icon: "🏏" },
+    { number: "8.5K+", label: "Nepal Users", icon: "🇳🇵" },
+    { number: "NPR 2.4M", label: "Total Winnings", icon: "💰" },
+    { number: "15+", label: "Sports Covered", icon: "🏆" },
   ];
 
-  const recentWins = [
+  const featuredNews = [
     {
-      match: "Manchester City vs Arsenal",
-      prediction: "Over 2.5 Goals",
-      odds: "1.85",
-      result: "3-1",
-      profit: "+$185",
+      title: "Nepal Cricket Team Prepares for ACC Premier Cup",
+      excerpt:
+        "National team training intensifies as they gear up for the regional championship...",
+      category: "Cricket",
+      readTime: "3 min",
+      isNepal: true,
     },
     {
-      match: "Lakers vs Warriors",
-      prediction: "Lakers +4.5",
-      odds: "1.91",
-      result: "112-108",
-      profit: "+$91",
+      title: "Premier League: ManU vs Liverpool Prediction Analysis",
+      excerpt:
+        "AI models show 89% confidence in over 2.5 goals for this weekend's clash...",
+      category: "Football",
+      readTime: "4 min",
+      isNepal: false,
     },
     {
-      match: "Chiefs vs Bills",
-      prediction: "Under 47.5",
-      odds: "1.90",
-      result: "21-17",
-      profit: "+$90",
+      title: "Nepal Premier League Season Preview",
+      excerpt:
+        "Complete analysis of all teams and key players to watch this season...",
+      category: "Football",
+      readTime: "6 min",
+      isNepal: true,
     },
   ];
 
   const testimonials = [
     {
-      name: "Mike Rodriguez",
-      role: "Professional Bettor",
+      name: "Rajesh Shrestha",
+      role: "Cricket Fan, Kathmandu",
       content:
-        "ScoreGuff has transformed my betting strategy. The AI predictions are incredibly accurate.",
+        "ScoreGuff's cricket predictions helped me win big during the World Cup!",
       rating: 5,
     },
     {
-      name: "Sarah Chen",
-      role: "Sports Analyst",
+      name: "Priya Gurung",
+      role: "Football Analyst, Pokhara",
       content:
-        "The analytics tools are professional-grade. Perfect for serious sports betting.",
+        "Best platform for both Nepal and international sports. Very accurate!",
       rating: 5,
     },
     {
-      name: "David Johnson",
-      role: "Casual Bettor",
+      name: "Amit Rai",
+      role: "Sports Bettor, Dharan",
       content:
-        "Easy to use interface with predictions that actually work. Highly recommended!",
+        "Finally, a prediction site that understands Nepali sports culture.",
       rating: 5,
     },
   ];
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+      {/* Hero Section with Nepal Focus */}
       <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-muted/30">
         <div className="absolute inset-0 bg-scoreguff-gradient opacity-5" />
         <div className="container mx-auto px-4 py-20 relative">
@@ -117,19 +130,19 @@ export default function Index() {
                 variant="outline"
                 className="mb-4 border-scoreguff-blue text-scoreguff-blue"
               >
-                <Trophy className="w-4 h-4 mr-2" />
-                #1 Sports Prediction Platform
+                <Globe className="w-4 h-4 mr-2" />
+                Nepal's #1 Sports Prediction Platform
               </Badge>
               <h1 className="text-5xl lg:text-7xl font-bold leading-tight mb-6">
-                Win More With{" "}
+                Sports Predictions for{" "}
                 <span className="bg-scoreguff-gradient bg-clip-text text-transparent">
-                  ScoreGuff
+                  Nepal
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground mb-8 max-w-lg">
-                AI-powered sports predictions with real-time analytics.
-                Transform your betting strategy and join thousands of winning
-                users.
+                From Nepal cricket to Premier League football - get AI-powered
+                predictions with 92%+ accuracy. Join 8,500+ Nepali sports fans
+                winning together.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 {isAuthenticated ? (
@@ -138,7 +151,7 @@ export default function Index() {
                       size="lg"
                       className="bg-scoreguff-blue hover:bg-scoreguff-blue/90 text-white px-8 py-6 text-lg"
                     >
-                      Go to Dashboard
+                      जाउ डेशबोर्डमा (Go to Dashboard)
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
@@ -148,7 +161,7 @@ export default function Index() {
                       size="lg"
                       className="bg-scoreguff-blue hover:bg-scoreguff-blue/90 text-white px-8 py-6 text-lg"
                     >
-                      Start Winning Today
+                      सुरु गर्नुहोस् (Start Winning)
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
                   </Link>
@@ -163,38 +176,40 @@ export default function Index() {
                 </Button>
               </div>
             </div>
+
+            {/* Live Game Preview */}
             <div className="relative">
               <div className="absolute inset-0 bg-scoreguff-gradient rounded-3xl blur-3xl opacity-20" />
               <Card className="relative border-2 border-scoreguff-blue/20 bg-card/80 backdrop-blur">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Target className="h-5 w-5 text-scoreguff-blue" />
+                    <Zap className="h-5 w-5 text-scoreguff-green" />
                     Live Prediction
                   </CardTitle>
                   <CardDescription>
-                    Real-time AI analysis for upcoming matches
+                    Real-time AI analysis for today's matches
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
                       <div>
-                        <h4 className="font-semibold">Man City vs Liverpool</h4>
+                        <h4 className="font-semibold">Nepal vs UAE</h4>
                         <p className="text-sm text-muted-foreground">
-                          Premier League • Today 15:30
+                          Cricket • ACC Premier Cup • Today 2:30 PM
                         </p>
                       </div>
                       <Badge className="bg-scoreguff-green">
-                        92% confidence
+                        95% confidence
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-scoreguff-blue/10 rounded-lg border border-scoreguff-blue/20">
                       <div>
                         <h4 className="font-semibold text-scoreguff-blue">
-                          Prediction: Over 2.5 Goals
+                          Prediction: Nepal to Win
                         </h4>
                         <p className="text-sm text-muted-foreground">
-                          Odds: 1.85 • Potential profit: $185
+                          Odds: 2.10 • Potential: NPR 2,100
                         </p>
                       </div>
                       <CheckCircle className="h-5 w-5 text-scoreguff-green" />
@@ -207,20 +222,21 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Nepal-Focused Stats */}
       <section className="py-20 bg-scoreguff-dark text-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">
-              Trusted by Winners Worldwide
+              Trusted by Nepal's Sports Community
             </h2>
             <p className="text-xl text-white/80">
-              Join thousands of successful sports bettors
+              नेपालका हजारौं खेलकुद प्रेमीहरुको भरोसाको साथी
             </p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
+            {nepalStats.map((stat, index) => (
               <div key={index} className="text-center">
+                <div className="text-4xl mb-2">{stat.icon}</div>
                 <div className="text-4xl lg:text-5xl font-bold bg-scoreguff-gradient bg-clip-text text-transparent mb-2">
                   {stat.number}
                 </div>
@@ -231,8 +247,123 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Live & Upcoming Games */}
       <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4">
+              Today's{" "}
+              <span className="bg-scoreguff-gradient bg-clip-text text-transparent">
+                Featured Matches
+              </span>
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Live games and upcoming predictions available now
+            </p>
+          </div>
+
+          {/* Live Games */}
+          {liveGames.length > 0 && (
+            <div className="mb-12">
+              <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                <Zap className="h-6 w-6 text-green-500" />
+                🔴 Live Now
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {liveGames.map((game) => (
+                  <Card
+                    key={game.id}
+                    className="border-2 border-green-500/30 bg-green-50/50 dark:bg-green-950/20 hover:shadow-lg transition-all"
+                  >
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <CardTitle className="text-lg">
+                            {game.homeTeam} vs {game.awayTeam}
+                          </CardTitle>
+                          <CardDescription className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">
+                              {game.sport}
+                            </Badge>
+                            <span>•</span>
+                            <span>{game.league}</span>
+                          </CardDescription>
+                        </div>
+                        <Badge className="bg-green-500 animate-pulse">
+                          LIVE
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <Link to="/predictions">
+                        <Button className="w-full bg-scoreguff-blue hover:bg-scoreguff-blue/90">
+                          View Live Predictions
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Upcoming Games */}
+          <div>
+            <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
+              <Clock className="h-6 w-6 text-scoreguff-blue" />
+              Upcoming Matches
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {upcomingGames.map((game) => (
+                <Card
+                  key={game.id}
+                  className="border-2 hover:border-scoreguff-blue/50 transition-all hover:shadow-lg"
+                >
+                  <CardHeader>
+                    <div className="flex justify-between items-start mb-2">
+                      <Badge variant="outline" className="text-xs">
+                        {game.sport}
+                      </Badge>
+                      <div className="text-xs text-muted-foreground text-right">
+                        <div>{game.matchDate}</div>
+                        <div>{game.matchTime}</div>
+                      </div>
+                    </div>
+                    <CardTitle className="text-lg">
+                      {game.homeTeam} vs {game.awayTeam}
+                    </CardTitle>
+                    <CardDescription className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
+                      {game.league}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {game.odds && (
+                      <div className="bg-muted/50 rounded p-2 mb-3">
+                        <div className="flex justify-between text-sm">
+                          <span>Home: {game.odds.homeWin}</span>
+                          <span>Away: {game.odds.awayWin}</span>
+                        </div>
+                      </div>
+                    )}
+                    <Link to="/predictions">
+                      <Button
+                        variant="outline"
+                        className="w-full border-scoreguff-blue text-scoreguff-blue hover:bg-scoreguff-blue hover:text-white"
+                      >
+                        View Predictions
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section with Nepal Focus */}
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl lg:text-5xl font-bold mb-6">
@@ -243,8 +374,8 @@ export default function Index() {
               ?
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Advanced technology meets sports expertise to give you the edge
-              you need to win consistently.
+              नेपालीहरुका लागि बनाइएको, अन्तर्राष्ट्रिय गुणस्तरको खेलकुद
+              भविष्यवाणी प्लेटफर्म
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -270,50 +401,71 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Recent Wins */}
-      <section className="py-20 bg-muted/30">
+      {/* Featured News with Nepal Content */}
+      <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">
-              Recent Winning Predictions
-            </h2>
+            <h2 className="text-4xl font-bold mb-4">Latest Sports News</h2>
             <p className="text-xl text-muted-foreground">
-              See our latest successful predictions and their profits
+              Nepal and international sports coverage
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {recentWins.map((win, index) => (
-              <Card key={index} className="border-2 border-scoreguff-green/20">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {featuredNews.map((article, index) => (
+              <Card
+                key={index}
+                className="border-2 hover:shadow-lg transition-all"
+              >
                 <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <CardTitle className="text-lg">{win.match}</CardTitle>
-                    <Badge className="bg-scoreguff-green">{win.profit}</Badge>
+                  <div className="flex justify-between items-start mb-2">
+                    <Badge
+                      className={`${article.isNepal ? "bg-red-600" : "bg-scoreguff-blue"} text-white`}
+                    >
+                      {article.isNepal ? "🇳🇵 Nepal" : "🌍 International"}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {article.readTime}
+                    </span>
                   </div>
-                  <CardDescription>{win.prediction}</CardDescription>
+                  <CardTitle className="text-lg leading-tight">
+                    {article.title}
+                  </CardTitle>
+                  <CardDescription>{article.excerpt}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      Odds: {win.odds}
-                    </span>
-                    <span className="text-sm font-medium">
-                      Result: {win.result}
-                    </span>
-                  </div>
+                  <Link to="/news">
+                    <Button variant="outline" size="sm" className="w-full">
+                      Read More
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}
           </div>
+          <div className="text-center mt-8">
+            <Link to="/news">
+              <Button
+                variant="outline"
+                size="lg"
+                className="border-scoreguff-blue text-scoreguff-blue hover:bg-scoreguff-blue hover:text-white"
+              >
+                View All News
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20">
+      {/* Nepal User Testimonials */}
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">What Our Users Say</h2>
+            <h2 className="text-4xl font-bold mb-4">
+              नेपाली प्रयोगकर्ताहरुको मत
+            </h2>
             <p className="text-xl text-muted-foreground">
-              Join thousands of satisfied customers
+              What our Nepal community says
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -344,15 +496,15 @@ export default function Index() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section with Nepal Appeal */}
       <section className="py-20 bg-scoreguff-gradient">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-            Ready to Start Winning?
+            नेपालको सबैभन्दा राम्रो Sports Platform मा सामेल हुनुहोस्!
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Join ScoreGuff today and transform your sports betting with
-            AI-powered predictions and professional analytics.
+            Join Nepal's most trusted sports prediction platform and start
+            winning with AI-powered insights for cricket, football, and more.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {isAuthenticated ? (
@@ -362,7 +514,7 @@ export default function Index() {
                   variant="secondary"
                   className="bg-white text-scoreguff-blue hover:bg-white/90 px-8 py-6 text-lg"
                 >
-                  Go to Dashboard
+                  Dashboard जाउ
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
@@ -373,7 +525,7 @@ export default function Index() {
                   variant="secondary"
                   className="bg-white text-scoreguff-blue hover:bg-white/90 px-8 py-6 text-lg"
                 >
-                  Get Started Free
+                  निशुल्क सुरु गर्नुहोस् (Start Free)
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
