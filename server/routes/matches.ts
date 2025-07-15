@@ -127,7 +127,7 @@ export const handleCreateMatch: RequestHandler = async (
 
     const matchData = createMatchSchema.parse(req.body);
 
-    const newMatch: Match = {
+    const newMatch = {
       id: `match_${Date.now()}`,
       homeTeam: matchData.homeTeam,
       awayTeam: matchData.awayTeam,
@@ -141,15 +141,6 @@ export const handleCreateMatch: RequestHandler = async (
       status: "upcoming" as const,
       homeTeamLogo: "/placeholder.svg",
       awayTeamLogo: "/placeholder.svg",
-      ...(matchData.venueCapacity && {
-        venueCapacity: matchData.venueCapacity,
-      }),
-      ...(matchData.weather && { weather: matchData.weather }),
-      ...(matchData.officials && { officials: matchData.officials }),
-      ...(matchData.ticketInfo && { ticketInfo: matchData.ticketInfo }),
-      ...(matchData.broadcastInfo && {
-        broadcastInfo: matchData.broadcastInfo,
-      }),
     };
 
     database.matches.push(newMatch);
