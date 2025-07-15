@@ -8,7 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
-import Predictions from "./pages/Predictions";
+import Fixtures from "./pages/Fixtures";
 import Leaderboard from "./pages/Leaderboard";
 import Analytics from "./pages/Analytics";
 import News from "./pages/News";
@@ -36,7 +36,8 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/predictions" element={<Predictions />} />
+                <Route path="/fixtures" element={<Fixtures />} />
+                <Route path="/predictions" element={<Fixtures />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/news" element={<News />} />
