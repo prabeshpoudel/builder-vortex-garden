@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdmin } from "@/contexts/AdminContext";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -45,6 +46,7 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
+  const { isAdmin, setIsAdmin } = useAdmin();
 
   const navItems = [
     { href: "/", label: "Home", icon: Home },
@@ -57,6 +59,9 @@ const Navigation = () => {
         ]
       : []),
     { href: "/news", label: "News", icon: Newspaper },
+    ...(isAdmin
+      ? [{ href: "/admin", label: "Admin Panel", icon: Settings }]
+      : []),
   ];
 
   const isActive = (path: string) => location.pathname === path;
