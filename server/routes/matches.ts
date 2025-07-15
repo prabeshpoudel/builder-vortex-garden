@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { z } from "zod";
-import { getMatches, database } from "../data/database";
+import { getMatches, database, Match } from "../data/database";
 import { AuthRequest } from "../middleware/auth";
 
 // Validation schemas
@@ -199,8 +199,9 @@ export const handleUpdateMatch: RequestHandler = async (
       return;
     }
 
+    const currentMatch = database.matches[matchIndex];
     database.matches[matchIndex] = {
-      ...database.matches[matchIndex],
+      ...currentMatch,
       ...updates,
     };
 
