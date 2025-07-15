@@ -12,7 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import {
   Trophy,
-  Target,
+  Newspaper,
   TrendingUp,
   Users,
   BarChart3,
@@ -24,6 +24,9 @@ import {
   MapPin,
   Clock,
   Zap,
+  Calendar,
+  Eye,
+  MessageCircle,
 } from "lucide-react";
 
 export default function Index() {
@@ -33,94 +36,102 @@ export default function Index() {
   const upcomingGames = getUpcomingGames().slice(0, 3);
   const liveGames = getLiveGames().slice(0, 2);
 
-  const features = [
+  const newsCategories = [
     {
-      icon: Target,
-      title: "AI-Powered Predictions",
-      description:
-        "Advanced algorithms analyze cricket, football, and international sports data for Nepal's most accurate predictions.",
+      icon: "🏏",
+      title: "Cricket",
+      description: "Nepal national team & international cricket coverage",
+      articleCount: 45,
+      color: "bg-green-500",
     },
     {
-      icon: TrendingUp,
-      title: "Real-Time Nepal Sports",
-      description:
-        "Track Nepal national team, domestic leagues, and international tournaments as they happen.",
+      icon: "⚽",
+      title: "Football",
+      description: "NPL, SAFF Championship & international football",
+      articleCount: 38,
+      color: "bg-blue-500",
     },
     {
-      icon: BarChart3,
-      title: "Performance Analytics",
-      description:
-        "Monitor your prediction accuracy with detailed statistics and ROI tracking in NPR.",
+      icon: "🏆",
+      title: "Nepal Sports",
+      description: "Local tournaments, athletes & national achievements",
+      articleCount: 62,
+      color: "bg-red-500",
     },
     {
-      icon: Users,
-      title: "Nepal Sports Community",
-      description:
-        "Join thousands of Nepali sports fans sharing insights on cricket, football, and global sports.",
+      icon: "🌍",
+      title: "International",
+      description: "World Cup, Olympics & global sports events",
+      articleCount: 29,
+      color: "bg-purple-500",
     },
   ];
 
-  const nepalStats = [
-    { number: "92.1%", label: "Cricket Accuracy", icon: "🏏" },
-    { number: "8.5K+", label: "Nepal Users", icon: "🇳🇵" },
-    { number: "NPR 2.4M", label: "Total Winnings", icon: "💰" },
-    { number: "15+", label: "Sports Covered", icon: "🏆" },
+  const newsStats = [
+    { number: "2.4K+", label: "Daily Readers", icon: "👥" },
+    { number: "150+", label: "News Articles", icon: "📰" },
+    { number: "25+", label: "Sports Covered", icon: "🏆" },
+    { number: "50+", label: "Live Updates Daily", icon: "⚡" },
   ];
 
-  const featuredNews = [
+  const featuredArticles = [
     {
-      title: "Nepal Cricket Team Prepares for ACC Premier Cup",
+      title: "Nepal Cricket Team Announces Squad for ACC Premier Cup",
       excerpt:
-        "National team training intensifies as they gear up for the regional championship...",
+        "Captain Rohit Paudel leads a 15-member squad featuring exciting new talents alongside experienced campaigners...",
       category: "Cricket",
-      readTime: "3 min",
+      readTime: "4 min read",
+      publishedAt: "2 hours ago",
+      author: "Rajesh Shrestha",
+      isBreaking: true,
       isNepal: true,
     },
     {
-      title: "Premier League: ManU vs Liverpool Prediction Analysis",
+      title: "Nepal Premier League 2024: All You Need to Know",
       excerpt:
-        "AI models show 89% confidence in over 2.5 goals for this weekend's clash...",
+        "Complete preview of Nepal's biggest football tournament featuring 8 teams, new stadiums, and top international players...",
       category: "Football",
-      readTime: "4 min",
-      isNepal: false,
+      readTime: "6 min read",
+      publishedAt: "4 hours ago",
+      author: "Priya Gurung",
+      isBreaking: false,
+      isNepal: true,
     },
     {
-      title: "Nepal Premier League Season Preview",
+      title: "SAFF Championship: Nepal vs India Preview & Analysis",
       excerpt:
-        "Complete analysis of all teams and key players to watch this season...",
+        "Head-to-head analysis as Nepal prepares for the crucial encounter against India in the SAFF Championship semi-final...",
       category: "Football",
-      readTime: "6 min",
+      readTime: "5 min read",
+      publishedAt: "6 hours ago",
+      author: "Amit Rai",
+      isBreaking: false,
       isNepal: true,
     },
   ];
 
-  const testimonials = [
-    {
-      name: "Rajesh Shrestha",
-      role: "Cricket Fan, Kathmandu",
-      content:
-        "ScoreGuff's cricket predictions helped me win big during the World Cup!",
-      rating: 5,
-    },
-    {
-      name: "Priya Gurung",
-      role: "Football Analyst, Pokhara",
-      content:
-        "Best platform for both Nepal and international sports. Very accurate!",
-      rating: 5,
-    },
-    {
-      name: "Amit Rai",
-      role: "Sports Bettor, Dharan",
-      content:
-        "Finally, a prediction site that understands Nepali sports culture.",
-      rating: 5,
-    },
+  const breakingNews = [
+    "🔴 BREAKING: Nepal beats UAE by 5 wickets in ACC Premier Cup",
+    "⚽ LIVE: Nepal vs Bangladesh in SAFF Championship (1-0)",
+    "🏆 NSL: Kathmandu FC wins dramatic penalty shootout final",
   ];
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section with Nepal Focus */}
+      {/* Breaking News Banner */}
+      <div className="bg-red-600 text-white py-2 overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-4 animate-scroll">
+            {breakingNews.map((news, index) => (
+              <span key={index} className="whitespace-nowrap font-medium">
+                {news}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Hero Section - Sports News Focus */}
       <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-muted/30">
         <div className="absolute inset-0 bg-scoreguff-gradient opacity-5" />
         <div className="container mx-auto px-4 py-20 relative">
@@ -131,88 +142,78 @@ export default function Index() {
                 className="mb-4 border-scoreguff-blue text-scoreguff-blue"
               >
                 <Globe className="w-4 h-4 mr-2" />
-                Nepal's #1 Sports Prediction Platform
+                Nepal's Premier Sports News Hub
               </Badge>
               <h1 className="text-5xl lg:text-7xl font-bold leading-tight mb-6">
-                Sports Predictions for{" "}
+                Sports News for{" "}
                 <span className="bg-scoreguff-gradient bg-clip-text text-transparent">
                   Nepal
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground mb-8 max-w-lg">
-                From Nepal cricket to Premier League football - get AI-powered
-                predictions with 92%+ accuracy. Join 8,500+ Nepali sports fans
-                winning together.
+                From the stadium to your screen - get the latest Nepal cricket,
+                football news, live updates & match fixtures. Join 2.4K+ daily
+                readers staying updated with Nepali sports.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                {isAuthenticated ? (
-                  <Link to="/dashboard">
-                    <Button
-                      size="lg"
-                      className="bg-scoreguff-blue hover:bg-scoreguff-blue/90 text-white px-8 py-6 text-lg"
-                    >
-                      जाउ डेशबोर्डमा (Go to Dashboard)
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link to="/signup">
-                    <Button
-                      size="lg"
-                      className="bg-scoreguff-blue hover:bg-scoreguff-blue/90 text-white px-8 py-6 text-lg"
-                    >
-                      सुरु गर्नुहोस् (Start Winning)
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
-                )}
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-scoreguff-blue text-scoreguff-blue hover:bg-scoreguff-blue hover:text-white px-8 py-6 text-lg"
-                >
-                  <Play className="mr-2 h-5 w-5" />
-                  Watch Demo
-                </Button>
+                <Link to="/news">
+                  <Button
+                    size="lg"
+                    className="bg-scoreguff-blue hover:bg-scoreguff-blue/90 text-white px-8 py-6 text-lg"
+                  >
+                    Read Latest News
+                    <Newspaper className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link to="/fixtures">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="border-scoreguff-blue text-scoreguff-blue hover:bg-scoreguff-blue hover:text-white px-8 py-6 text-lg"
+                  >
+                    <Calendar className="mr-2 h-5 w-5" />
+                    View Fixtures
+                  </Button>
+                </Link>
               </div>
             </div>
 
-            {/* Live Game Preview */}
+            {/* Featured Article Preview */}
             <div className="relative">
               <div className="absolute inset-0 bg-scoreguff-gradient rounded-3xl blur-3xl opacity-20" />
               <Card className="relative border-2 border-scoreguff-blue/20 bg-card/80 backdrop-blur">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Zap className="h-5 w-5 text-scoreguff-green" />
-                    Live Prediction
+                    <Newspaper className="h-5 w-5 text-scoreguff-blue" />
+                    Breaking News
                   </CardTitle>
                   <CardDescription>
-                    Real-time AI analysis for today's matches
+                    Latest updates from Nepal sports
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
                       <div>
-                        <h4 className="font-semibold">Nepal vs UAE</h4>
+                        <h4 className="font-semibold">
+                          Nepal Cricket Team Squad Announced
+                        </h4>
                         <p className="text-sm text-muted-foreground">
-                          Cricket • ACC Premier Cup • Today 2:30 PM
+                          Cricket • ACC Premier Cup • 2 hours ago
                         </p>
                       </div>
-                      <Badge className="bg-scoreguff-green">
-                        95% confidence
-                      </Badge>
+                      <Badge className="bg-red-500 text-white">BREAKING</Badge>
                     </div>
                     <div className="flex justify-between items-center p-3 bg-scoreguff-blue/10 rounded-lg border border-scoreguff-blue/20">
                       <div>
                         <h4 className="font-semibold text-scoreguff-blue">
-                          Prediction: Nepal to Win
+                          15-member squad ready for regional championship
                         </h4>
                         <p className="text-sm text-muted-foreground">
-                          Odds: 2.10 • Potential: NPR 2,100
+                          By Rajesh Shrestha • 4 min read
                         </p>
                       </div>
-                      <CheckCircle className="h-5 w-5 text-scoreguff-green" />
+                      <ArrowRight className="h-5 w-5 text-scoreguff-blue" />
                     </div>
                   </div>
                 </CardContent>
@@ -222,19 +223,19 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Nepal-Focused Stats */}
+      {/* News Platform Stats */}
       <section className="py-20 bg-scoreguff-dark text-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">
-              Trusted by Nepal's Sports Community
+              Nepal's Most Trusted Sports Platform
             </h2>
             <p className="text-xl text-white/80">
-              नेपालका हजारौं खेलकुद प्रेमीहरुको भरोसाको साथी
+              नेपालको सबैभन्दा भरपर्दो खेलकुद समाचार मञ्च
             </p>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {nepalStats.map((stat, index) => (
+            {newsStats.map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-4xl mb-2">{stat.icon}</div>
                 <div className="text-4xl lg:text-5xl font-bold bg-scoreguff-gradient bg-clip-text text-transparent mb-2">
@@ -247,18 +248,126 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Live & Upcoming Games */}
+      {/* Sports Categories */}
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">
-              Today's{" "}
+              Sports{" "}
               <span className="bg-scoreguff-gradient bg-clip-text text-transparent">
-                Featured Matches
+                Categories
               </span>
             </h2>
             <p className="text-xl text-muted-foreground">
-              Live games and upcoming predictions available now
+              Comprehensive coverage across all major sports
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {newsCategories.map((category, index) => (
+              <Link key={index} to="/news">
+                <Card className="border-2 hover:border-scoreguff-blue/50 transition-all duration-300 hover:shadow-lg hover:shadow-scoreguff-blue/20 group cursor-pointer">
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="text-4xl">{category.icon}</div>
+                      <Badge className={`${category.color} text-white`}>
+                        {category.articleCount} articles
+                      </Badge>
+                    </div>
+                    <CardTitle className="text-xl group-hover:text-scoreguff-blue transition-colors">
+                      {category.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-base">
+                      {category.description}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Articles */}
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4">Featured Articles</h2>
+            <p className="text-xl text-muted-foreground">
+              Hand-picked stories from our editorial team
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {featuredArticles.map((article, index) => (
+              <Card
+                key={index}
+                className="border-2 hover:shadow-lg transition-all group cursor-pointer"
+              >
+                <CardHeader>
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex gap-2">
+                      <Badge
+                        className={`${article.isNepal ? "bg-red-600" : "bg-scoreguff-blue"} text-white`}
+                      >
+                        {article.isNepal ? "🇳🇵 Nepal" : "🌍 International"}
+                      </Badge>
+                      {article.isBreaking && (
+                        <Badge className="bg-red-500 text-white animate-pulse">
+                          BREAKING
+                        </Badge>
+                      )}
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {article.readTime}
+                    </span>
+                  </div>
+                  <CardTitle className="text-lg leading-tight group-hover:text-scoreguff-blue transition-colors">
+                    {article.title}
+                  </CardTitle>
+                  <CardDescription>{article.excerpt}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <div className="flex items-center gap-4">
+                      <span>By {article.author}</span>
+                      <span>{article.publishedAt}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Eye className="h-4 w-4" />
+                      <span>2.1k</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link to="/news">
+              <Button
+                size="lg"
+                className="bg-scoreguff-blue hover:bg-scoreguff-blue/90"
+              >
+                Read All Articles
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Live & Upcoming Matches */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-4">
+              Match{" "}
+              <span className="bg-scoreguff-gradient bg-clip-text text-transparent">
+                Fixtures
+              </span>
+            </h2>
+            <p className="text-xl text-muted-foreground">
+              Stay updated with upcoming matches and live scores
             </p>
           </div>
 
@@ -295,11 +404,16 @@ export default function Index() {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <Link to="/predictions">
-                        <Button className="w-full bg-scoreguff-blue hover:bg-scoreguff-blue/90">
-                          View Live Predictions
-                        </Button>
-                      </Link>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">
+                          {game.venue}
+                        </span>
+                        <Link to="/fixtures">
+                          <Button size="sm" variant="outline">
+                            Follow Match
+                          </Button>
+                        </Link>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
@@ -310,7 +424,7 @@ export default function Index() {
           {/* Upcoming Games */}
           <div>
             <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <Clock className="h-6 w-6 text-scoreguff-blue" />
+              <Calendar className="h-6 w-6 text-scoreguff-blue" />
               Upcoming Matches
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -334,24 +448,16 @@ export default function Index() {
                     </CardTitle>
                     <CardDescription className="flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
-                      {game.league}
+                      {game.league} • {game.venue}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {game.odds && (
-                      <div className="bg-muted/50 rounded p-2 mb-3">
-                        <div className="flex justify-between text-sm">
-                          <span>Home: {game.odds.homeWin}</span>
-                          <span>Away: {game.odds.awayWin}</span>
-                        </div>
-                      </div>
-                    )}
-                    <Link to="/predictions">
+                    <Link to="/fixtures">
                       <Button
                         variant="outline"
                         className="w-full border-scoreguff-blue text-scoreguff-blue hover:bg-scoreguff-blue hover:text-white"
                       >
-                        View Predictions
+                        View Details
                       </Button>
                     </Link>
                   </CardContent>
@@ -359,152 +465,31 @@ export default function Index() {
               ))}
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Features Section with Nepal Focus */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-              Why Choose{" "}
-              <span className="bg-scoreguff-gradient bg-clip-text text-transparent">
-                ScoreGuff
-              </span>
-              ?
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              नेपालीहरुका लागि बनाइएको, अन्तर्राष्ट्रिय गुणस्तरको खेलकुद
-              भविष्यवाणी प्लेटफर्म
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <Card
-                key={index}
-                className="border-2 hover:border-scoreguff-blue/50 transition-all duration-300 hover:shadow-lg hover:shadow-scoreguff-blue/20 group"
-              >
-                <CardHeader>
-                  <div className="w-12 h-12 rounded-lg bg-scoreguff-gradient flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <feature.icon className="h-6 w-6 text-white" />
-                  </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base">
-                    {feature.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured News with Nepal Content */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Latest Sports News</h2>
-            <p className="text-xl text-muted-foreground">
-              Nepal and international sports coverage
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {featuredNews.map((article, index) => (
-              <Card
-                key={index}
-                className="border-2 hover:shadow-lg transition-all"
-              >
-                <CardHeader>
-                  <div className="flex justify-between items-start mb-2">
-                    <Badge
-                      className={`${article.isNepal ? "bg-red-600" : "bg-scoreguff-blue"} text-white`}
-                    >
-                      {article.isNepal ? "🇳🇵 Nepal" : "🌍 International"}
-                    </Badge>
-                    <span className="text-xs text-muted-foreground">
-                      {article.readTime}
-                    </span>
-                  </div>
-                  <CardTitle className="text-lg leading-tight">
-                    {article.title}
-                  </CardTitle>
-                  <CardDescription>{article.excerpt}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Link to="/news">
-                    <Button variant="outline" size="sm" className="w-full">
-                      Read More
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
           <div className="text-center mt-8">
-            <Link to="/news">
+            <Link to="/fixtures">
               <Button
                 variant="outline"
                 size="lg"
                 className="border-scoreguff-blue text-scoreguff-blue hover:bg-scoreguff-blue hover:text-white"
               >
-                View All News
-                <ArrowRight className="ml-2 h-4 w-4" />
+                View All Fixtures
+                <Calendar className="ml-2 h-4 w-4" />
               </Button>
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Nepal User Testimonials */}
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">
-              नेपाली प्रयोगकर्ताहरुको मत
-            </h2>
-            <p className="text-xl text-muted-foreground">
-              What our Nepal community says
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-2">
-                <CardContent className="pt-6">
-                  <div className="flex mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 fill-scoreguff-gold text-scoreguff-gold"
-                      />
-                    ))}
-                  </div>
-                  <p className="text-muted-foreground mb-4 italic">
-                    "{testimonial.content}"
-                  </p>
-                  <div>
-                    <p className="font-semibold">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {testimonial.role}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section with Nepal Appeal */}
+      {/* CTA Section */}
       <section className="py-20 bg-scoreguff-gradient">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-            नेपालको सबैभन्दा राम्रो Sports Platform मा सामेल हुनुहोस्!
+            Nepal's Sports News Revolution
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Join Nepal's most trusted sports prediction platform and start
-            winning with AI-powered insights for cricket, football, and more.
+            Join thousands of sports fans getting the latest news, match
+            updates, and exclusive insights from Nepal and around the world.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {isAuthenticated ? (
@@ -514,7 +499,7 @@ export default function Index() {
                   variant="secondary"
                   className="bg-white text-scoreguff-blue hover:bg-white/90 px-8 py-6 text-lg"
                 >
-                  Dashboard जाउ
+                  Go to Dashboard
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
@@ -525,18 +510,21 @@ export default function Index() {
                   variant="secondary"
                   className="bg-white text-scoreguff-blue hover:bg-white/90 px-8 py-6 text-lg"
                 >
-                  निशुल्क सुरु गर्नुहोस् (Start Free)
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  Join ScoreGuff
+                  <Users className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
             )}
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-scoreguff-blue px-8 py-6 text-lg"
-            >
-              Learn More
-            </Button>
+            <Link to="/news">
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white text-white hover:bg-white hover:text-scoreguff-blue px-8 py-6 text-lg"
+              >
+                <Newspaper className="mr-2 h-5 w-5" />
+                Read News
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
