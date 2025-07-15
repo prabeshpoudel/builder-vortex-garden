@@ -159,9 +159,17 @@ export const handleCreateArticle: RequestHandler = async (
     const wordCount = articleData.content.split(/\s+/).length;
     const readTime = Math.max(1, Math.ceil(wordCount / 200));
 
-    const newArticle = {
+    const newArticle: Article = {
       id: `article_${Date.now()}`,
-      ...articleData,
+      title: articleData.title,
+      excerpt: articleData.excerpt,
+      content: articleData.content,
+      category: articleData.category,
+      isNepal: articleData.isNepal,
+      status: articleData.status,
+      isPinned: articleData.isPinned,
+      isTrending: articleData.isTrending,
+      tags: articleData.tags,
       slug,
       author: req.user.name,
       authorId: req.user.id,
