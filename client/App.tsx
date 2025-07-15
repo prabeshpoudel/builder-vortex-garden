@@ -19,6 +19,7 @@ import NotFound from "./pages/NotFound";
 import Navigation from "./components/Navigation";
 import { AuthProvider } from "./contexts/AuthContext";
 import { AdminProvider } from "./contexts/AdminContext";
+import { UserManagementProvider } from "./contexts/UserManagementContext";
 
 const queryClient = new QueryClient();
 
@@ -26,26 +27,28 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <AdminProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Navigation />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/predictions" element={<Predictions />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/news" element={<News />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+        <UserManagementProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Navigation />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/predictions" element={<Predictions />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/news" element={<News />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </UserManagementProvider>
       </AdminProvider>
     </AuthProvider>
   </QueryClientProvider>
