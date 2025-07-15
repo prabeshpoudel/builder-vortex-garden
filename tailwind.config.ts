@@ -57,6 +57,12 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        scoreguff: {
+          blue: "hsl(var(--scoreguff-blue))",
+          green: "hsl(var(--scoreguff-green))",
+          dark: "hsl(var(--scoreguff-dark))",
+          gold: "hsl(var(--scoreguff-gold))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -80,10 +86,28 @@ export default {
             height: "0",
           },
         },
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        slideUp: {
+          "0%": { transform: "translateY(20px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "bounce-slow": "bounce 3s infinite",
+        "pulse-slow": "pulse 3s infinite",
+        "fade-in": "fadeIn 0.5s ease-in",
+        "slide-up": "slideUp 0.5s ease-out",
+      },
+      backgroundImage: {
+        "scoreguff-gradient":
+          "linear-gradient(135deg, hsl(var(--scoreguff-gradient-start)), hsl(var(--scoreguff-gradient-end)))",
+        "scoreguff-gradient-dark":
+          "linear-gradient(135deg, hsl(var(--scoreguff-dark)), hsl(var(--scoreguff-blue)))",
       },
     },
   },
