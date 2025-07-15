@@ -250,16 +250,14 @@ const Predictions = () => {
                   <CardTitle className="text-lg leading-tight">
                     {game.homeTeam} vs {game.awayTeam}
                   </CardTitle>
-                  <CardDescription>
-                    <div className="flex items-center gap-4">
-                      <span className="font-medium">{game.league}</span>
-                      {game.venue && (
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          <span className="text-xs">{game.venue}</span>
-                        </div>
-                      )}
-                    </div>
+                  <CardDescription className="flex items-center gap-4">
+                    <span className="font-medium">{game.league}</span>
+                    {game.venue && (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        <span className="text-xs">{game.venue}</span>
+                      </span>
+                    )}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pt-0">
