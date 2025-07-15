@@ -92,26 +92,38 @@ const Admin = () => {
   });
 
   const sports = [
-    "Soccer",
-    "Basketball",
+    "Cricket",
     "Football",
-    "Baseball",
-    "Hockey",
+    "Basketball",
+    "Volleyball",
     "Tennis",
+    "Badminton",
+    "Boxing",
   ];
   const leagues = {
-    Soccer: [
+    Cricket: [
+      "Nepal Premier League (Cricket)",
+      "ACC Premier Cup",
+      "SAFF Championship",
+      "IPL",
+      "World Cup",
+      "Asia Cup",
+      "Everest Premier League",
+    ],
+    Football: [
+      "Nepal Premier League",
+      "SAFF Championship",
+      "AFC Challenge Cup",
       "Premier League",
       "La Liga",
-      "Serie A",
-      "Bundesliga",
       "Champions League",
+      "Martyrs Memorial League",
     ],
-    Basketball: ["NBA", "EuroLeague", "WNBA"],
-    Football: ["NFL", "College Football"],
-    Baseball: ["MLB", "Minor League"],
-    Hockey: ["NHL", "AHL"],
-    Tennis: ["ATP", "WTA", "Grand Slam"],
+    Basketball: ["NBA", "Nepal Basketball League", "FIBA Asia Cup"],
+    Volleyball: ["Nepal Volleyball League", "Asian Championship"],
+    Tennis: ["ATP", "WTA", "Grand Slam", "Nepal Open"],
+    Badminton: ["All Nepal Championship", "BWF", "Thomas Cup"],
+    Boxing: ["Nepal Boxing Championship", "AIBA", "Olympics"],
   };
 
   const handleAddGame = () => {
