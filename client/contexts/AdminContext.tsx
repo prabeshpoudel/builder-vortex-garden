@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import * as React from "react";
 
 export interface Game {
   id: string;
@@ -37,10 +37,12 @@ interface AdminContextType {
   setIsAdmin: (isAdmin: boolean) => void;
 }
 
-const AdminContext = createContext<AdminContextType | undefined>(undefined);
+const AdminContext = React.createContext<AdminContextType | undefined>(
+  undefined,
+);
 
 export const useAdmin = () => {
-  const context = useContext(AdminContext);
+  const context = React.useContext(AdminContext);
   if (context === undefined) {
     throw new Error("useAdmin must be used within an AdminProvider");
   }
@@ -52,10 +54,10 @@ interface AdminProviderProps {
 }
 
 export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
-  const [games, setGames] = useState<Game[]>([]);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [games, setGames] = React.useState<Game[]>([]);
+  const [isAdmin, setIsAdmin] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     // Load games from localStorage
     const storedGames = localStorage.getItem("scoreguff_games");
     const storedAdminStatus = localStorage.getItem("scoreguff_admin");
