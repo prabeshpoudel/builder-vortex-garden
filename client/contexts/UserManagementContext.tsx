@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import * as React from "react";
 
 export interface User {
   id: string;
@@ -28,12 +28,12 @@ interface UserManagementContextType {
   getBannedUsers: () => User[];
 }
 
-const UserManagementContext = createContext<
+const UserManagementContext = React.createContext<
   UserManagementContextType | undefined
 >(undefined);
 
 export const useUserManagement = () => {
-  const context = useContext(UserManagementContext);
+  const context = React.useContext(UserManagementContext);
   if (context === undefined) {
     throw new Error(
       "useUserManagement must be used within a UserManagementProvider",
@@ -49,9 +49,9 @@ interface UserManagementProviderProps {
 export const UserManagementProvider: React.FC<UserManagementProviderProps> = ({
   children,
 }) => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = React.useState<User[]>([]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     // Load users from localStorage
     const storedUsers = localStorage.getItem("scoreguff_users");
     if (storedUsers) {
