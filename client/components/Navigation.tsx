@@ -145,6 +145,18 @@ const Navigation = () => {
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>
                   </DropdownMenuItem>
+                  {!isAdmin && (
+                    <DropdownMenuItem onClick={() => setIsAdmin(true)}>
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Enable Admin Mode</span>
+                    </DropdownMenuItem>
+                  )}
+                  {isAdmin && (
+                    <DropdownMenuItem onClick={() => setIsAdmin(false)}>
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Disable Admin Mode</span>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={logout}>
                     <LogOut className="mr-2 h-4 w-4" />
