@@ -4,37 +4,104 @@ export interface Game {
   id: string;
   homeTeam: string;
   awayTeam: string;
+  homeTeamLogo?: string;
+  awayTeamLogo?: string;
   league: string;
   sport: string;
   matchDate: string;
   matchTime: string;
-  status: "upcoming" | "live" | "completed";
-  odds?: {
-    homeWin: number;
-    awayWin: number;
-    draw?: number;
-    overUnder?: number;
+  venue: string;
+  venueCapacity?: number;
+  status: "upcoming" | "live" | "completed" | "postponed" | "cancelled";
+  score?: {
+    home: number;
+    away: number;
+    status: string;
   };
-  predictions?: {
-    id: string;
-    type: string;
-    confidence: number;
-    recommendation: string;
-  }[];
-  venue?: string;
-  description?: string;
+  weather?: {
+    temperature: number;
+    condition: string;
+  };
+  officials?: {
+    referee: string;
+    assistants: string[];
+  };
+  description: string;
+  importance: "low" | "medium" | "high";
+  ticketInfo?: {
+    available: boolean;
+    priceRange: string;
+    url?: string;
+  };
+  broadcastInfo?: {
+    tv: string[];
+    streaming: string[];
+  };
+}
+
+export interface Article {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  category: string;
+  author: string;
+  authorId: string;
+  publishedAt: string;
+  updatedAt: string;
+  status: "draft" | "published" | "featured";
+  isPinned: boolean;
+  isTrending: boolean;
+  isBreaking: boolean;
+  views: number;
+  likes: number;
+  comments: number;
+  imageUrl?: string;
+  tags: string[];
+  isNepal: boolean;
+  readTime: number;
 }
 
 interface AdminContextType {
   games: Game[];
+  articles: Article[];
   isAdmin: boolean;
-  addGame: (game: Omit<Game, "id">) => void;
-  updateGame: (id: string, game: Partial<Game>) => void;
-  deleteGame: (id: string) => void;
+  isLoading: boolean;
+
+  // Game management
+  addGame: (game: Omit<Game, "id">) => Promise<void>;
+  updateGame: (id: string, game: Partial<Game>) => Promise<void>;
+  deleteGame: (id: string) => Promise<void>;
   getUpcomingGames: () => Game[];
   getLiveGames: () => Game[];
   getCompletedGames: () => Game[];
+
+  // Article management
+  addArticle: (
+    article: Omit<
+      Article,
+      | "id"
+      | "author"
+      | "authorId"
+      | "publishedAt"
+      | "updatedAt"
+      | "views"
+      | "likes"
+      | "comments"
+      | "slug"
+    >,
+  ) => Promise<void>;
+  updateArticle: (id: string, article: Partial<Article>) => Promise<void>;
+  deleteArticle: (id: string) => Promise<void>;
+  togglePinArticle: (id: string) => Promise<void>;
+  toggleTrendingArticle: (id: string) => Promise<void>;
+
+  // Admin state
   setIsAdmin: (isAdmin: boolean) => void;
+
+  // Data fetching
+  refreshData: () => Promise<void>;
 }
 
 const AdminContext = React.createContext<AdminContextType | undefined>(
@@ -53,172 +120,206 @@ interface AdminProviderProps {
   children: React.ReactNode;
 }
 
+// API helpers
+const getAuthHeaders = (): HeadersInit => {
+  const token = localStorage.getItem("scoreguff_token");
+  return token
+    ? {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    : {
+        "Content-Type": "application/json",
+      };
+};
+
+const apiRequest = async (
+  endpoint: string,
+  options: RequestInit = {},
+): Promise<any> => {
+  const response = await fetch(`/api${endpoint}`, {
+    ...options,
+    headers: {
+      ...getAuthHeaders(),
+      ...options.headers,
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "API request failed");
+  }
+
+  return data;
+};
+
 export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
   const [games, setGames] = React.useState<Game[]>([]);
+  const [articles, setArticles] = React.useState<Article[]>([]);
   const [isAdmin, setIsAdmin] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    // Load games from localStorage
-    const storedGames = localStorage.getItem("scoreguff_games");
-    const storedAdminStatus = localStorage.getItem("scoreguff_admin");
+    const initializeData = async () => {
+      await loadMatches();
+      await loadArticles();
 
-    if (storedGames) {
-      try {
-        setGames(JSON.parse(storedGames));
-      } catch (error) {
-        console.error("Error loading games:", error);
-        initializeDefaultGames();
+      // Load admin status from localStorage
+      const storedAdminStatus = localStorage.getItem("scoreguff_admin");
+      if (storedAdminStatus) {
+        setIsAdmin(JSON.parse(storedAdminStatus));
       }
-    } else {
-      initializeDefaultGames();
-    }
 
-    if (storedAdminStatus) {
-      setIsAdmin(JSON.parse(storedAdminStatus));
-    }
+      setIsLoading(false);
+    };
+
+    initializeData();
   }, []);
 
-  const initializeDefaultGames = () => {
-    const defaultGames: Game[] = [
-      {
-        id: "1",
-        homeTeam: "Nepal",
-        awayTeam: "UAE",
-        league: "ACC Premier Cup",
-        sport: "Cricket",
-        matchDate: "2024-01-20",
-        matchTime: "14:30",
-        status: "upcoming",
-        odds: {
-          homeWin: 2.1,
-          awayWin: 1.8,
-        },
-        predictions: [
-          {
-            id: "p1",
-            type: "Nepal to Win",
-            confidence: 95,
-            recommendation: "Strong Buy",
-          },
-          {
-            id: "p2",
-            type: "Over 280 Runs",
-            confidence: 88,
-            recommendation: "Buy",
-          },
-        ],
-        venue: "TU Cricket Ground, Kathmandu",
-        description: "Nepal's crucial match in ACC Premier Cup campaign",
-      },
-      {
-        id: "2",
-        homeTeam: "Kathmandu Raiders",
-        awayTeam: "Pokhara Thunders",
-        league: "Nepal Premier League",
-        sport: "Football",
-        matchDate: "2024-01-21",
-        matchTime: "16:00",
-        status: "upcoming",
-        odds: {
-          homeWin: 1.85,
-          awayWin: 1.95,
-          draw: 3.2,
-        },
-        predictions: [
-          {
-            id: "p3",
-            type: "Both Teams to Score",
-            confidence: 78,
-            recommendation: "Buy",
-          },
-          {
-            id: "p4",
-            type: "Over 2.5 Goals",
-            confidence: 85,
-            recommendation: "Strong Buy",
-          },
-        ],
-        venue: "Dashrath Stadium, Kathmandu",
-        description: "Derby match in Nepal's premier football league",
-      },
-      {
-        id: "3",
-        homeTeam: "Manchester City",
-        awayTeam: "Liverpool",
-        league: "Premier League",
-        sport: "Football",
-        matchDate: "2024-01-22",
-        matchTime: "21:15",
-        status: "upcoming",
-        odds: {
-          homeWin: 2.1,
-          awayWin: 3.2,
-          draw: 3.8,
-        },
-        predictions: [
-          {
-            id: "p5",
-            type: "Over 2.5 Goals",
-            confidence: 73,
-            recommendation: "Buy",
-          },
-        ],
-        venue: "Etihad Stadium",
-        description: "Top of the table clash in Premier League",
-      },
-      {
-        id: "4",
-        homeTeam: "Nepal U-19",
-        awayTeam: "Bangladesh U-19",
-        league: "SAFF U-19 Championship",
-        sport: "Cricket",
-        matchDate: "2024-01-19",
-        matchTime: "09:30",
-        status: "live",
-        odds: {
-          homeWin: 1.9,
-          awayWin: 1.9,
-        },
-        predictions: [
-          {
-            id: "p6",
-            type: "Nepal U-19 to Win",
-            confidence: 82,
-            recommendation: "Buy",
-          },
-        ],
-        venue: "Kirtipur Cricket Ground",
-        description: "Nepal youth team in regional championship",
-      },
-    ];
-    setGames(defaultGames);
-    localStorage.setItem("scoreguff_games", JSON.stringify(defaultGames));
+  const loadMatches = async () => {
+    try {
+      const data = await apiRequest("/matches");
+      setGames(data.matches);
+    } catch (error) {
+      console.error("Failed to load matches:", error);
+    }
   };
 
-  const saveGames = (updatedGames: Game[]) => {
-    setGames(updatedGames);
-    localStorage.setItem("scoreguff_games", JSON.stringify(updatedGames));
+  const loadArticles = async () => {
+    try {
+      const data = await apiRequest("/articles?status=published&limit=100");
+      setArticles(data.articles);
+    } catch (error) {
+      console.error("Failed to load articles:", error);
+    }
   };
 
-  const addGame = (gameData: Omit<Game, "id">) => {
-    const newGame: Game = {
-      ...gameData,
-      id: Date.now().toString(),
-    };
-    const updatedGames = [...games, newGame];
-    saveGames(updatedGames);
+  const addGame = async (gameData: Omit<Game, "id">) => {
+    try {
+      const data = await apiRequest("/matches", {
+        method: "POST",
+        body: JSON.stringify(gameData),
+      });
+      setGames((prev) => [...prev, data.match]);
+    } catch (error) {
+      console.error("Failed to add game:", error);
+      throw error;
+    }
   };
 
-  const updateGame = (id: string, gameData: Partial<Game>) => {
-    const updatedGames = games.map((game) =>
-      game.id === id ? { ...game, ...gameData } : game,
-    );
-    saveGames(updatedGames);
+  const updateGame = async (id: string, gameData: Partial<Game>) => {
+    try {
+      const data = await apiRequest(`/matches/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(gameData),
+      });
+      setGames((prev) =>
+        prev.map((game) => (game.id === id ? data.match : game)),
+      );
+    } catch (error) {
+      console.error("Failed to update game:", error);
+      throw error;
+    }
   };
 
-  const deleteGame = (id: string) => {
-    const updatedGames = games.filter((game) => game.id !== id);
-    saveGames(updatedGames);
+  const deleteGame = async (id: string) => {
+    try {
+      await apiRequest(`/matches/${id}`, {
+        method: "DELETE",
+      });
+      setGames((prev) => prev.filter((game) => game.id !== id));
+    } catch (error) {
+      console.error("Failed to delete game:", error);
+      throw error;
+    }
+  };
+
+  const addArticle = async (
+    articleData: Omit<
+      Article,
+      | "id"
+      | "author"
+      | "authorId"
+      | "publishedAt"
+      | "updatedAt"
+      | "views"
+      | "likes"
+      | "comments"
+      | "slug"
+    >,
+  ) => {
+    try {
+      const data = await apiRequest("/articles", {
+        method: "POST",
+        body: JSON.stringify(articleData),
+      });
+      setArticles((prev) => [data.article, ...prev]);
+    } catch (error) {
+      console.error("Failed to add article:", error);
+      throw error;
+    }
+  };
+
+  const updateArticle = async (id: string, articleData: Partial<Article>) => {
+    try {
+      const data = await apiRequest(`/articles/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(articleData),
+      });
+      setArticles((prev) =>
+        prev.map((article) => (article.id === id ? data.article : article)),
+      );
+    } catch (error) {
+      console.error("Failed to update article:", error);
+      throw error;
+    }
+  };
+
+  const deleteArticle = async (id: string) => {
+    try {
+      await apiRequest(`/articles/${id}`, {
+        method: "DELETE",
+      });
+      setArticles((prev) => prev.filter((article) => article.id !== id));
+    } catch (error) {
+      console.error("Failed to delete article:", error);
+      throw error;
+    }
+  };
+
+  const togglePinArticle = async (id: string) => {
+    try {
+      const data = await apiRequest(`/articles/${id}/pin`, {
+        method: "POST",
+      });
+      setArticles((prev) =>
+        prev.map((article) =>
+          article.id === id ? { ...article, isPinned: data.isPinned } : article,
+        ),
+      );
+    } catch (error) {
+      console.error("Failed to toggle pin article:", error);
+      throw error;
+    }
+  };
+
+  const toggleTrendingArticle = async (id: string) => {
+    try {
+      const data = await apiRequest(`/articles/${id}/trending`, {
+        method: "POST",
+      });
+      setArticles((prev) =>
+        prev.map((article) =>
+          article.id === id
+            ? { ...article, isTrending: data.isTrending }
+            : article,
+        ),
+      );
+    } catch (error) {
+      console.error("Failed to toggle trending article:", error);
+      throw error;
+    }
   };
 
   const getUpcomingGames = () =>
@@ -232,16 +333,30 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
     localStorage.setItem("scoreguff_admin", JSON.stringify(adminStatus));
   };
 
+  const refreshData = async () => {
+    setIsLoading(true);
+    await Promise.all([loadMatches(), loadArticles()]);
+    setIsLoading(false);
+  };
+
   const value: AdminContextType = {
     games,
+    articles,
     isAdmin,
+    isLoading,
     addGame,
     updateGame,
     deleteGame,
     getUpcomingGames,
     getLiveGames,
     getCompletedGames,
+    addArticle,
+    updateArticle,
+    deleteArticle,
+    togglePinArticle,
+    toggleTrendingArticle,
     setIsAdmin: handleSetIsAdmin,
+    refreshData,
   };
 
   return (
