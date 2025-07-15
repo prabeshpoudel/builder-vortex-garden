@@ -202,7 +202,25 @@ export const handleUpdateProfile: RequestHandler = async (
     });
 
     const updates = updateSchema.parse(req.body);
-    const updatedUser = updateUser(req.user.id, updates);
+
+    // Transform partial updates to match User interface requirements
+    const userUpdates: Partial<User> = {
+      ...updates,
+      preferences: updates.preferences
+        ? {
+            favoriteTeams: updates.preferences.favoriteTeams || [],
+            favoriteLeagues: updates.preferences.favoriteLeagues || [],
+            notificationSettings: {
+              email: updates.preferences.notificationSettings?.email ?? true,
+              push: updates.preferences.notificationSettings?.push ?? false,
+              breakingNews:
+                updates.preferences.notificationSettings?.breakingNews ?? true,
+            },
+          }
+        : undefined,
+    };
+
+    const updatedUser = updateUser(req.user.id, userUpdates);
 
     if (!updatedUser) {
       res.status(404).json({ error: "User not found" });
