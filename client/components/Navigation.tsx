@@ -33,7 +33,7 @@ import {
   Home,
   BarChart3,
   Trophy,
-  Target,
+  Calendar,
   TrendingUp,
   Newspaper,
   User,
@@ -50,15 +50,15 @@ const Navigation = () => {
 
   const navItems = [
     { href: "/", label: "Home", icon: Home },
+    { href: "/news", label: "News", icon: Newspaper },
+    { href: "/fixtures", label: "Fixtures", icon: Calendar },
     ...(isAuthenticated
       ? [
           { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
-          { href: "/predictions", label: "Predictions", icon: Target },
           { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
           { href: "/analytics", label: "Analytics", icon: TrendingUp },
         ]
       : []),
-    { href: "/news", label: "News", icon: Newspaper },
     ...(isAdmin
       ? [{ href: "/admin", label: "Admin Panel", icon: Settings }]
       : []),
