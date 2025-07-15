@@ -195,10 +195,8 @@ export const handleUpdateMatch: RequestHandler = async (
     }
 
     const currentMatch = database.matches[matchIndex];
-    database.matches[matchIndex] = {
-      ...currentMatch,
-      ...updates,
-    };
+    // Apply updates carefully to avoid type conflicts
+    Object.assign(database.matches[matchIndex], updates);
 
     res.json({
       message: "Match updated successfully",
