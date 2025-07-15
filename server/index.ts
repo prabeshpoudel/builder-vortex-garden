@@ -68,7 +68,7 @@ export function createServer() {
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
   // Serve static files from the frontend build
-  const frontendPath = path.join(__dirname, "../client/dist");
+  const frontendPath = path.join(__dirname, "../client/dist/spa");
   app.use(express.static(frontendPath));
 
   // Health check
