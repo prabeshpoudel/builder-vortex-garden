@@ -466,6 +466,142 @@ const Admin = () => {
           ))}
         </div>
 
+        {/* User Management Section */}
+        <Card className="border-2 mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <UserCheck className="h-5 w-5 text-scoreguff-blue" />
+              User Management
+            </CardTitle>
+            <CardDescription>
+              Manage user accounts, roles, and permissions
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>User</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Location</TableHead>
+                    <TableHead>Stats</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {users.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell>
+                        <div>
+                          <p className="font-medium">{user.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {user.email}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Joined: {user.joinedDate}
+                          </p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          className={
+                            user.role === "admin"
+                              ? "bg-purple-500 text-white"
+                              : "bg-blue-500 text-white"
+                          }
+                        >
+                          {user.role === "admin" && (
+                            <Crown className="h-3 w-3 mr-1" />
+                          )}
+                          {user.role.toUpperCase()}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          className={
+                            user.status === "active"
+                              ? "bg-green-500 text-white"
+                              : user.status === "banned"
+                                ? "bg-red-500 text-white"
+                                : "bg-gray-500 text-white"
+                          }
+                        >
+                          {user.status === "active" && (
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                          )}
+                          {user.status === "banned" && (
+                            <Ban className="h-3 w-3 mr-1" />
+                          )}
+                          {user.status.toUpperCase()}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <MapPin className="h-3 w-3 text-muted-foreground" />
+                          <span className="text-sm">{user.location}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          <div>Predictions: {user.totalPredictions}</div>
+                          <div>Accuracy: {user.accuracy}%</div>
+                          <div>
+                            Winnings: NPR {user.totalWinnings.toLocaleString()}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2 flex-wrap">
+                          {user.role === "user" ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => promoteToAdmin(user.id)}
+                              className="text-purple-600 border-purple-600 hover:bg-purple-600 hover:text-white"
+                            >
+                              <Crown className="h-4 w-4" />
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => demoteToUser(user.id)}
+                              className="text-blue-600 border-blue-600 hover:bg-blue-600 hover:text-white"
+                            >
+                              <UserCheck className="h-4 w-4" />
+                            </Button>
+                          )}
+                          {user.status === "active" ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => banUser(user.id)}
+                              className="text-red-600 border-red-600 hover:bg-red-600 hover:text-white"
+                            >
+                              <Ban className="h-4 w-4" />
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => unbanUser(user.id)}
+                              className="text-green-600 border-green-600 hover:bg-green-600 hover:text-white"
+                            >
+                              <CheckCircle className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Games Management */}
         <Card className="border-2">
           <CardHeader>
