@@ -127,12 +127,25 @@ export const handleCreateMatch: RequestHandler = async (
 
     const matchData = createMatchSchema.parse(req.body);
 
-    const newMatch = {
+    const newMatch: Match = {
       id: `match_${Date.now()}`,
-      ...matchData,
+      homeTeam: matchData.homeTeam,
+      awayTeam: matchData.awayTeam,
+      league: matchData.league,
+      sport: matchData.sport,
+      matchDate: matchData.matchDate,
+      matchTime: matchData.matchTime,
+      venue: matchData.venue,
+      description: matchData.description,
+      importance: matchData.importance,
       status: "upcoming" as const,
       homeTeamLogo: "/placeholder.svg",
       awayTeamLogo: "/placeholder.svg",
+      venueCapacity: matchData.venueCapacity,
+      weather: matchData.weather,
+      officials: matchData.officials,
+      ticketInfo: matchData.ticketInfo,
+      broadcastInfo: matchData.broadcastInfo,
     };
 
     database.matches.push(newMatch);
