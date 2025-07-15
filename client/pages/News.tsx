@@ -175,8 +175,10 @@ const News = () => {
             </span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Stay updated with the latest sports insights, predictions, and
-            analysis from our expert team
+            नेपाली र अन्तर्राष्ट्रिय खेलकुदका ताजा समाचार र विश्लेषण
+          </p>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-2">
+            Latest Nepal and international sports news, insights & predictions
           </p>
         </div>
 
@@ -231,9 +233,11 @@ const News = () => {
                     </Badge>
                   )}
                   <Badge
-                    className={`absolute top-3 left-3 ${getCategoryColor(article.category)} text-white`}
+                    className={`absolute top-3 left-3 ${getCategoryColor(article.category, article.isNepal)} text-white`}
                   >
-                    {article.category}
+                    {article.isNepal
+                      ? `🇳🇵 ${article.category}`
+                      : `🌍 ${article.category}`}
                   </Badge>
                 </div>
                 <CardHeader>
@@ -289,9 +293,11 @@ const News = () => {
                     className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <Badge
-                    className={`absolute top-2 left-2 ${getCategoryColor(article.category)} text-white text-xs`}
+                    className={`absolute top-2 left-2 ${getCategoryColor(article.category, article.isNepal)} text-white text-xs`}
                   >
-                    {article.category}
+                    {article.isNepal
+                      ? `🇳🇵 ${article.category}`
+                      : `🌍 ${article.category}`}
                   </Badge>
                 </div>
                 <CardHeader className="pb-2">
