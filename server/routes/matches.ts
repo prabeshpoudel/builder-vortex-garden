@@ -141,11 +141,15 @@ export const handleCreateMatch: RequestHandler = async (
       status: "upcoming" as const,
       homeTeamLogo: "/placeholder.svg",
       awayTeamLogo: "/placeholder.svg",
-      venueCapacity: matchData.venueCapacity,
-      weather: matchData.weather,
-      officials: matchData.officials,
-      ticketInfo: matchData.ticketInfo,
-      broadcastInfo: matchData.broadcastInfo,
+      ...(matchData.venueCapacity && {
+        venueCapacity: matchData.venueCapacity,
+      }),
+      ...(matchData.weather && { weather: matchData.weather }),
+      ...(matchData.officials && { officials: matchData.officials }),
+      ...(matchData.ticketInfo && { ticketInfo: matchData.ticketInfo }),
+      ...(matchData.broadcastInfo && {
+        broadcastInfo: matchData.broadcastInfo,
+      }),
     };
 
     database.matches.push(newMatch);
