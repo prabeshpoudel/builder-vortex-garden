@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,6 +22,7 @@ import {
 } from "lucide-react";
 
 export default function Index() {
+  const { isAuthenticated } = useAuth();
   const features = [
     {
       icon: Target,
@@ -130,15 +132,27 @@ export default function Index() {
                 users.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Link to="/dashboard">
-                  <Button
-                    size="lg"
-                    className="bg-scoreguff-blue hover:bg-scoreguff-blue/90 text-white px-8 py-6 text-lg"
-                  >
-                    Start Winning Today
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
+                {isAuthenticated ? (
+                  <Link to="/dashboard">
+                    <Button
+                      size="lg"
+                      className="bg-scoreguff-blue hover:bg-scoreguff-blue/90 text-white px-8 py-6 text-lg"
+                    >
+                      Go to Dashboard
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link to="/signup">
+                    <Button
+                      size="lg"
+                      className="bg-scoreguff-blue hover:bg-scoreguff-blue/90 text-white px-8 py-6 text-lg"
+                    >
+                      Start Winning Today
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </Link>
+                )}
                 <Button
                   variant="outline"
                   size="lg"
@@ -341,16 +355,29 @@ export default function Index() {
             AI-powered predictions and professional analytics.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/dashboard">
-              <Button
-                size="lg"
-                variant="secondary"
-                className="bg-white text-scoreguff-blue hover:bg-white/90 px-8 py-6 text-lg"
-              >
-                Get Started Free
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+            {isAuthenticated ? (
+              <Link to="/dashboard">
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="bg-white text-scoreguff-blue hover:bg-white/90 px-8 py-6 text-lg"
+                >
+                  Go to Dashboard
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/signup">
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="bg-white text-scoreguff-blue hover:bg-white/90 px-8 py-6 text-lg"
+                >
+                  Get Started Free
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            )}
             <Button
               size="lg"
               variant="outline"
