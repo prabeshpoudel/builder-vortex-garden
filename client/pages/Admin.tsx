@@ -47,6 +47,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useAdmin, Game } from "@/contexts/AdminContext";
+import { useUserManagement } from "@/contexts/UserManagementContext";
 import {
   Plus,
   Edit,
@@ -58,6 +59,11 @@ import {
   Trophy,
   Users,
   BarChart3,
+  UserCheck,
+  UserX,
+  Crown,
+  Ban,
+  CheckCircle,
 } from "lucide-react";
 
 const Admin = () => {
@@ -70,6 +76,17 @@ const Admin = () => {
     getLiveGames,
     getCompletedGames,
   } = useAdmin();
+
+  const {
+    users,
+    promoteToAdmin,
+    demoteToUser,
+    banUser,
+    unbanUser,
+    getActiveUsers,
+    getAdminUsers,
+    getBannedUsers,
+  } = useUserManagement();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
@@ -186,21 +203,25 @@ const Admin = () => {
       title: "Total Games",
       value: games.length.toString(),
       icon: Trophy,
+      color: "text-scoreguff-blue",
     },
     {
-      title: "Upcoming",
-      value: getUpcomingGames().length.toString(),
-      icon: Calendar,
+      title: "Active Users",
+      value: getActiveUsers().length.toString(),
+      icon: Users,
+      color: "text-green-600",
     },
     {
-      title: "Live",
+      title: "Admins",
+      value: getAdminUsers().length.toString(),
+      icon: Shield,
+      color: "text-purple-600",
+    },
+    {
+      title: "Live Games",
       value: getLiveGames().length.toString(),
       icon: Clock,
-    },
-    {
-      title: "Completed",
-      value: getCompletedGames().length.toString(),
-      icon: BarChart3,
+      color: "text-orange-600",
     },
   ];
 
