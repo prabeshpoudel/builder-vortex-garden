@@ -34,6 +34,7 @@ import {
   Trophy,
   Target,
   TrendingUp,
+  Newspaper,
   User,
   Settings,
   LogOut,
@@ -55,7 +56,7 @@ const Navigation = () => {
           { href: "/analytics", label: "Analytics", icon: TrendingUp },
         ]
       : []),
-    { href: "/news", label: "News", icon: TrendingUp },
+    { href: "/news", label: "News", icon: Newspaper },
   ];
 
   const isActive = (path: string) => location.pathname === path;
