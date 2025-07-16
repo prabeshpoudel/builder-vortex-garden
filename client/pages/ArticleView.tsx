@@ -301,7 +301,7 @@ const ArticleView = () => {
               <div
                 className="text-slate-800 leading-relaxed"
                 dangerouslySetInnerHTML={{
-                  __html: article.content.replace(/\n/g, "<br />"),
+                  __html: (article.content || "").replace(/\n/g, "<br />"),
                 }}
               />
             </div>
