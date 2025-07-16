@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Card,
   CardContent,
@@ -7,185 +9,254 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Bookmark,
+  Trophy,
   TrendingUp,
   Eye,
   MessageCircle,
   Calendar,
-  Trophy,
-  Newspaper,
-  Star,
+  Target,
+  BarChart3,
   Clock,
-  ThumbsUp,
-  Share2,
-  Heart,
+  CheckCircle,
+  XCircle,
+  Timer,
+  Star,
+  Award,
+  Activity,
+  Bookmark,
   User,
+  Crown,
 } from "lucide-react";
 
+interface Prediction {
+  id: string;
+  userId: string;
+  userName: string;
+  matchId: string;
+  matchTitle: string;
+  prediction: {
+    winner: "home" | "away" | "draw";
+    homeScore?: number;
+    awayScore?: number;
+    confidence: "low" | "medium" | "high";
+  };
+  createdAt: string;
+  result?: {
+    isCorrect: boolean;
+    points: number;
+  };
+  status: "pending" | "won" | "lost" | "void";
+}
+
 const Dashboard = () => {
-  const newsStats = [
+  const { user, isAuthenticated } = useAuth();
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Mock prediction data for now
+  useEffect(() => {
+    if (!isAuthenticated || !user) return;
+
+    // Simulated user predictions
+    const userPredictions: Prediction[] = [
+      {
+        id: "pred_1",
+        userId: user.id || "user_1",
+        userName: user.name || "User",
+        matchId: "match_1",
+        matchTitle: "Nepal vs UAE - ACC Premier Cup",
+        prediction: {
+          winner: "home",
+          homeScore: 180,
+          awayScore: 165,
+          confidence: "high",
+        },
+        createdAt: "2024-01-18T10:30:00Z",
+        result: {
+          isCorrect: true,
+          points: 15,
+        },
+        status: "won",
+      },
+      {
+        id: "pred_2",
+        userId: user.id || "user_1",
+        userName: user.name || "User",
+        matchId: "match_2",
+        matchTitle: "Kathmandu FC vs Pokhara Thunder - NPL",
+        prediction: {
+          winner: "home",
+          homeScore: 2,
+          awayScore: 1,
+          confidence: "medium",
+        },
+        createdAt: "2024-01-17T14:20:00Z",
+        result: {
+          isCorrect: false,
+          points: 0,
+        },
+        status: "lost",
+      },
+      {
+        id: "pred_3",
+        userId: user.id || "user_1",
+        userName: user.name || "User",
+        matchId: "match_3",
+        matchTitle: "Manchester City vs Arsenal - Premier League",
+        prediction: {
+          winner: "away",
+          homeScore: 1,
+          awayScore: 2,
+          confidence: "medium",
+        },
+        createdAt: "2024-01-16T09:15:00Z",
+        status: "pending",
+      },
+      {
+        id: "pred_4",
+        userId: user.id || "user_1",
+        userName: user.name || "User",
+        matchId: "match_4",
+        matchTitle: "Nepal U-19 vs Bangladesh U-19 - SAFF Championship",
+        prediction: {
+          winner: "home",
+          homeScore: 3,
+          awayScore: 1,
+          confidence: "high",
+        },
+        createdAt: "2024-01-15T16:45:00Z",
+        result: {
+          isCorrect: true,
+          points: 20,
+        },
+        status: "won",
+      },
+    ];
+
+    setPredictions(userPredictions);
+    setLoading(false);
+  }, [user, isAuthenticated]);
+
+  const totalPredictions = predictions.length;
+  const wonPredictions = predictions.filter((p) => p.status === "won").length;
+  const lostPredictions = predictions.filter((p) => p.status === "lost").length;
+  const pendingPredictions = predictions.filter(
+    (p) => p.status === "pending",
+  ).length;
+  const successRate =
+    totalPredictions > 0
+      ? Math.round((wonPredictions / (wonPredictions + lostPredictions)) * 100)
+      : 0;
+  const totalPoints = predictions.reduce(
+    (sum, p) => sum + (p.result?.points || 0),
+    0,
+  );
+
+  const stats = [
     {
-      title: "Articles Read",
-      value: "127",
-      change: "+23 this week",
-      icon: Eye,
+      title: "Total Predictions",
+      value: totalPredictions.toString(),
+      change: "+3 this week",
+      icon: Target,
+      color: "text-scoreguff-blue",
     },
     {
-      title: "Saved Articles",
-      value: "45",
-      change: "+8 new saves",
-      icon: Bookmark,
+      title: "Success Rate",
+      value: `${successRate}%`,
+      change:
+        wonPredictions > lostPredictions ? "+5% this week" : "-2% this week",
+      icon: Trophy,
+      color:
+        successRate >= 60
+          ? "text-green-600"
+          : successRate >= 40
+            ? "text-yellow-600"
+            : "text-red-600",
     },
     {
-      title: "Comments Posted",
-      value: "28",
-      change: "+5 this week",
-      icon: MessageCircle,
+      title: "Points Earned",
+      value: totalPoints.toString(),
+      change: "+35 this week",
+      icon: Star,
+      color: "text-purple-600",
     },
-    { title: "Categories Following", value: "6", change: "2 new", icon: Star },
+    {
+      title: "Rank",
+      value: "#247",
+      change: "↑15 positions",
+      icon: Crown,
+      color: "text-orange-600",
+    },
   ];
 
-  const savedArticles = [
-    {
-      title: "Nepal Cricket Team Prepares for ACC Premier Cup",
-      category: "Cricket",
-      author: "Rajesh Shrestha",
-      savedAt: "2 days ago",
-      readTime: "5 min read",
-      isNepal: true,
-    },
-    {
-      title: "Champions League: Quarter-Final Analysis",
-      category: "Football",
-      author: "Maria Santos",
-      savedAt: "4 days ago",
-      readTime: "7 min read",
-      isNepal: false,
-    },
-    {
-      title: "Nepal Premier League 2024: Complete Preview",
-      category: "Football",
-      author: "Priya Gurung",
-      savedAt: "1 week ago",
-      readTime: "8 min read",
-      isNepal: true,
-    },
-  ];
+  const getConfidenceColor = (confidence: string) => {
+    switch (confidence) {
+      case "high":
+        return "bg-green-500";
+      case "medium":
+        return "bg-yellow-500";
+      case "low":
+        return "bg-gray-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
 
-  const subscribedCategories = [
-    {
-      name: "Nepal Cricket",
-      articleCount: 23,
-      unreadCount: 5,
-      trending: true,
-      color: "bg-green-500",
-      icon: "🏏",
-    },
-    {
-      name: "Nepal Football",
-      articleCount: 18,
-      unreadCount: 3,
-      trending: false,
-      color: "bg-red-500",
-      icon: "⚽",
-    },
-    {
-      name: "International Football",
-      articleCount: 45,
-      unreadCount: 12,
-      trending: true,
-      color: "bg-blue-500",
-      icon: "🌍",
-    },
-    {
-      name: "Basketball",
-      articleCount: 12,
-      unreadCount: 2,
-      trending: false,
-      color: "bg-orange-500",
-      icon: "🏀",
-    },
-    {
-      name: "Tennis",
-      articleCount: 8,
-      unreadCount: 1,
-      trending: false,
-      color: "bg-purple-500",
-      icon: "🎾",
-    },
-    {
-      name: "Nepal Sports General",
-      articleCount: 31,
-      unreadCount: 7,
-      trending: true,
-      color: "bg-indigo-500",
-      icon: "🏆",
-    },
-  ];
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "won":
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case "lost":
+        return <XCircle className="h-4 w-4 text-red-500" />;
+      case "pending":
+        return <Timer className="h-4 w-4 text-yellow-500" />;
+      default:
+        return <Clock className="h-4 w-4 text-gray-500" />;
+    }
+  };
 
-  const mostReadThisWeek = [
-    {
-      title: "Nepal vs UAE Cricket Match Analysis",
-      category: "Cricket",
-      views: "12.5k",
-      author: "Amit Rai",
-      publishedAt: "3 days ago",
-      trending: true,
-      isNepal: true,
-    },
-    {
-      title: "SAFF Championship: Nepal's Journey",
-      category: "Football",
-      views: "8.9k",
-      author: "Sita Tamang",
-      publishedAt: "2 days ago",
-      trending: true,
-      isNepal: true,
-    },
-    {
-      title: "Premier League Title Race Heats Up",
-      category: "Football",
-      views: "7.2k",
-      author: "David Wilson",
-      publishedAt: "1 day ago",
-      trending: false,
-      isNepal: false,
-    },
-    {
-      title: "Nepal Olympic Preparations Update",
-      category: "Olympics",
-      views: "6.8k",
-      author: "Binod Thapa",
-      publishedAt: "4 days ago",
-      trending: false,
-      isNepal: true,
-    },
-  ];
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
-  const myComments = [
-    {
-      article: "Nepal Cricket Team Squad Selection",
-      comment: "Great to see young talents getting opportunities...",
-      likes: 12,
-      replies: 3,
-      postedAt: "2 hours ago",
-    },
-    {
-      article: "NSL Final Preview",
-      comment: "Kathmandu FC has been dominant this season...",
-      likes: 8,
-      replies: 1,
-      postedAt: "1 day ago",
-    },
-    {
-      article: "Champions League Quarter-Finals",
-      comment: "Man City looks unstoppable this year...",
-      likes: 15,
-      replies: 5,
-      postedAt: "3 days ago",
-    },
-  ];
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30 flex items-center justify-center">
+        <Card className="w-full max-w-md mx-4">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">Welcome to ScoreGuff</CardTitle>
+            <CardDescription>
+              Please sign in to view your dashboard and prediction history
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <Button className="w-full bg-scoreguff-blue hover:bg-scoreguff-blue/90">
+              Sign In
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-scoreguff-blue mx-auto"></div>
+          <p className="mt-4 text-slate-600">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
@@ -194,23 +265,24 @@ const Dashboard = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
             <h1 className="text-4xl font-bold bg-scoreguff-gradient bg-clip-text text-transparent mb-2">
-              News Dashboard
+              My Dashboard
             </h1>
             <p className="text-muted-foreground text-lg">
-              Your personalized sports news hub
+              Welcome back, {user?.name || "Sports Fan"}! Track your predictions
+              and performance
             </p>
           </div>
           <div className="flex gap-3 mt-4 md:mt-0">
             <Button className="bg-scoreguff-blue hover:bg-scoreguff-blue/90">
-              <Newspaper className="h-4 w-4 mr-2" />
-              Browse News
+              <Target className="h-4 w-4 mr-2" />
+              Make Prediction
             </Button>
           </div>
         </div>
 
-        {/* News Stats Cards */}
+        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {newsStats.map((stat, index) => (
+          {stats.map((stat, index) => (
             <Card
               key={index}
               className="relative overflow-hidden border-2 hover:border-scoreguff-blue/50 transition-all duration-300 hover:shadow-lg hover:shadow-scoreguff-blue/20"
@@ -219,13 +291,15 @@ const Dashboard = () => {
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   {stat.title}
                 </CardTitle>
-                <stat.icon className="h-5 w-5 text-scoreguff-blue" />
+                <stat.icon className={`h-5 w-5 ${stat.color}`} />
               </CardHeader>
               <CardContent>
                 <div className="text-3xl font-bold text-foreground mb-1">
                   {stat.value}
                 </div>
-                <p className="text-sm text-scoreguff-green font-medium">
+                <p
+                  className={`text-sm font-medium ${stat.change.includes("+") || stat.change.includes("↑") ? "text-green-600" : "text-red-600"}`}
+                >
                   {stat.change}
                 </p>
               </CardContent>
@@ -233,206 +307,346 @@ const Dashboard = () => {
           ))}
         </div>
 
+        {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Saved Articles */}
-          <div className="lg:col-span-2 space-y-8">
+          {/* Prediction History */}
+          <div className="lg:col-span-2">
             <Card className="border-2">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Bookmark className="h-5 w-5 text-scoreguff-blue" />
-                  Saved Articles
+                  <Activity className="h-5 w-5 text-scoreguff-blue" />
+                  Prediction History
                 </CardTitle>
                 <CardDescription>
-                  Articles you've bookmarked for later reading
+                  Your recent predictions and their outcomes
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {savedArticles.map((article, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors cursor-pointer"
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge
-                            className={`${article.isNepal ? "bg-red-600" : "bg-scoreguff-blue"} text-white text-xs`}
-                          >
-                            {article.isNepal ? "🇳🇵 Nepal" : "🌍 International"}
-                          </Badge>
-                          <Badge variant="outline" className="text-xs">
-                            {article.category}
-                          </Badge>
-                        </div>
-                        <h4 className="font-semibold text-foreground mb-1">
-                          {article.title}
-                        </h4>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>By {article.author}</span>
-                          <span>{article.readTime}</span>
-                          <span>Saved {article.savedAt}</span>
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="sm">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                <Button variant="outline" className="w-full mt-4">
-                  View All Saved Articles
-                </Button>
-              </CardContent>
-            </Card>
+                <Tabs defaultValue="all" className="w-full">
+                  <TabsList className="grid w-full grid-cols-4">
+                    <TabsTrigger value="all">All</TabsTrigger>
+                    <TabsTrigger value="pending">Pending</TabsTrigger>
+                    <TabsTrigger value="won">Won</TabsTrigger>
+                    <TabsTrigger value="lost">Lost</TabsTrigger>
+                  </TabsList>
 
-            {/* Most Read This Week */}
-            <Card className="border-2">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-scoreguff-blue" />
-                  Most Read This Week
-                </CardTitle>
-                <CardDescription>
-                  Popular articles among ScoreGuff readers
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {mostReadThisWeek.map((article, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors cursor-pointer"
-                    >
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-lg font-bold text-scoreguff-blue">
-                            #{index + 1}
-                          </span>
-                          <Badge
-                            className={`${article.isNepal ? "bg-red-600" : "bg-scoreguff-blue"} text-white text-xs`}
-                          >
-                            {article.isNepal ? "🇳🇵" : "🌍"}
-                          </Badge>
-                          {article.trending && (
-                            <Badge className="bg-orange-500 text-white text-xs">
-                              🔥 TRENDING
+                  <TabsContent value="all" className="space-y-4 mt-6">
+                    {predictions.map((prediction) => (
+                      <div
+                        key={prediction.id}
+                        className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            {getStatusIcon(prediction.status)}
+                            <Badge
+                              className={`${getConfidenceColor(prediction.prediction.confidence)} text-white text-xs`}
+                            >
+                              {prediction.prediction.confidence.toUpperCase()}
                             </Badge>
-                          )}
-                        </div>
-                        <h4 className="font-semibold text-foreground mb-1">
-                          {article.title}
-                        </h4>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span>By {article.author}</span>
-                          <span>{article.publishedAt}</span>
-                          <div className="flex items-center gap-1">
-                            <Eye className="h-3 w-3" />
-                            <span>{article.views} views</span>
+                            <span className="text-sm text-muted-foreground">
+                              {formatDate(prediction.createdAt)}
+                            </span>
+                          </div>
+                          <h4 className="font-semibold text-foreground mb-1">
+                            {prediction.matchTitle}
+                          </h4>
+                          <div className="text-sm text-muted-foreground">
+                            Predicted:{" "}
+                            {prediction.prediction.winner === "home"
+                              ? "Home Win"
+                              : prediction.prediction.winner === "away"
+                                ? "Away Win"
+                                : "Draw"}
+                            {prediction.prediction.homeScore !== undefined &&
+                              prediction.prediction.awayScore !== undefined && (
+                                <span>
+                                  {" "}
+                                  ({prediction.prediction.homeScore}-
+                                  {prediction.prediction.awayScore})
+                                </span>
+                              )}
                           </div>
                         </div>
+                        <div className="text-right">
+                          {prediction.result && (
+                            <div className="text-lg font-bold">
+                              <span
+                                className={
+                                  prediction.status === "won"
+                                    ? "text-green-600"
+                                    : "text-red-600"
+                                }
+                              >
+                                {prediction.result.points > 0 ? "+" : ""}
+                                {prediction.result.points} pts
+                              </span>
+                            </div>
+                          )}
+                          <Badge
+                            variant={
+                              prediction.status === "won"
+                                ? "default"
+                                : prediction.status === "lost"
+                                  ? "destructive"
+                                  : "secondary"
+                            }
+                          >
+                            {prediction.status.toUpperCase()}
+                          </Badge>
+                        </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </TabsContent>
+
+                  <TabsContent value="pending" className="space-y-4 mt-6">
+                    {predictions
+                      .filter((p) => p.status === "pending")
+                      .map((prediction) => (
+                        <div
+                          key={prediction.id}
+                          className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors"
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              {getStatusIcon(prediction.status)}
+                              <Badge
+                                className={`${getConfidenceColor(prediction.prediction.confidence)} text-white text-xs`}
+                              >
+                                {prediction.prediction.confidence.toUpperCase()}
+                              </Badge>
+                              <span className="text-sm text-muted-foreground">
+                                {formatDate(prediction.createdAt)}
+                              </span>
+                            </div>
+                            <h4 className="font-semibold text-foreground mb-1">
+                              {prediction.matchTitle}
+                            </h4>
+                            <div className="text-sm text-muted-foreground">
+                              Predicted:{" "}
+                              {prediction.prediction.winner === "home"
+                                ? "Home Win"
+                                : prediction.prediction.winner === "away"
+                                  ? "Away Win"
+                                  : "Draw"}
+                              {prediction.prediction.homeScore !== undefined &&
+                                prediction.prediction.awayScore !==
+                                  undefined && (
+                                  <span>
+                                    {" "}
+                                    ({prediction.prediction.homeScore}-
+                                    {prediction.prediction.awayScore})
+                                  </span>
+                                )}
+                            </div>
+                          </div>
+                          <Badge variant="secondary">PENDING</Badge>
+                        </div>
+                      ))}
+                  </TabsContent>
+
+                  <TabsContent value="won" className="space-y-4 mt-6">
+                    {predictions
+                      .filter((p) => p.status === "won")
+                      .map((prediction) => (
+                        <div
+                          key={prediction.id}
+                          className="flex items-center justify-between p-4 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800"
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                              <Badge className="bg-green-500 text-white text-xs">
+                                {prediction.prediction.confidence.toUpperCase()}
+                              </Badge>
+                              <span className="text-sm text-muted-foreground">
+                                {formatDate(prediction.createdAt)}
+                              </span>
+                            </div>
+                            <h4 className="font-semibold text-foreground mb-1">
+                              {prediction.matchTitle}
+                            </h4>
+                            <div className="text-sm text-muted-foreground">
+                              Correct prediction:{" "}
+                              {prediction.prediction.winner === "home"
+                                ? "Home Win"
+                                : prediction.prediction.winner === "away"
+                                  ? "Away Win"
+                                  : "Draw"}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-lg font-bold text-green-600">
+                              +{prediction.result?.points} pts
+                            </div>
+                            <Badge className="bg-green-500">WON</Badge>
+                          </div>
+                        </div>
+                      ))}
+                  </TabsContent>
+
+                  <TabsContent value="lost" className="space-y-4 mt-6">
+                    {predictions
+                      .filter((p) => p.status === "lost")
+                      .map((prediction) => (
+                        <div
+                          key={prediction.id}
+                          className="flex items-center justify-between p-4 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800"
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2">
+                              <XCircle className="h-4 w-4 text-red-500" />
+                              <Badge className="bg-red-500 text-white text-xs">
+                                {prediction.prediction.confidence.toUpperCase()}
+                              </Badge>
+                              <span className="text-sm text-muted-foreground">
+                                {formatDate(prediction.createdAt)}
+                              </span>
+                            </div>
+                            <h4 className="font-semibold text-foreground mb-1">
+                              {prediction.matchTitle}
+                            </h4>
+                            <div className="text-sm text-muted-foreground">
+                              Predicted:{" "}
+                              {prediction.prediction.winner === "home"
+                                ? "Home Win"
+                                : prediction.prediction.winner === "away"
+                                  ? "Away Win"
+                                  : "Draw"}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-lg font-bold text-red-600">
+                              0 pts
+                            </div>
+                            <Badge variant="destructive">LOST</Badge>
+                          </div>
+                        </div>
+                      ))}
+                  </TabsContent>
+                </Tabs>
               </CardContent>
             </Card>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Subscribed Categories */}
+            {/* Performance Overview */}
             <Card className="border-2">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Star className="h-5 w-5 text-scoreguff-blue" />
-                  Subscribed Categories
+                  <BarChart3 className="h-5 w-5 text-scoreguff-blue" />
+                  Performance Overview
                 </CardTitle>
-                <CardDescription>
-                  Your personalized news categories
-                </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {subscribedCategories.map((category, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="text-2xl">{category.icon}</div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-medium text-sm">
-                              {category.name}
-                            </h4>
-                            {category.trending && (
-                              <Badge className="bg-orange-500 text-white text-xs">
-                                🔥
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {category.articleCount} articles
-                          </p>
-                        </div>
-                      </div>
-                      {category.unreadCount > 0 && (
-                        <Badge className="bg-red-500 text-white text-xs">
-                          {category.unreadCount}
-                        </Badge>
-                      )}
-                    </div>
-                  ))}
+              <CardContent className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span>Success Rate</span>
+                    <span className="font-medium">{successRate}%</span>
+                  </div>
+                  <Progress value={successRate} className="h-2" />
                 </div>
-                <Button variant="outline" className="w-full mt-4">
-                  Manage Categories
+
+                <div className="grid grid-cols-2 gap-4 pt-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">
+                      {wonPredictions}
+                    </div>
+                    <div className="text-xs text-muted-foreground">Won</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-red-600">
+                      {lostPredictions}
+                    </div>
+                    <div className="text-xs text-muted-foreground">Lost</div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t">
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-scoreguff-blue">
+                      {totalPoints}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Total Points
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card className="border-2">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-scoreguff-blue" />
+                  Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button className="w-full bg-scoreguff-blue hover:bg-scoreguff-blue/90">
+                  <Target className="h-4 w-4 mr-2" />
+                  Make New Prediction
+                </Button>
+                <Button variant="outline" className="w-full">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  View Fixtures
+                </Button>
+                <Button variant="outline" className="w-full">
+                  <Trophy className="h-4 w-4 mr-2" />
+                  Leaderboard
                 </Button>
               </CardContent>
             </Card>
 
-            {/* My Comments & Likes */}
+            {/* Recent Activity */}
             <Card className="border-2">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5 text-scoreguff-blue" />
-                  My Comments & Likes
+                  <Activity className="h-5 w-5 text-scoreguff-blue" />
+                  Recent Activity
                 </CardTitle>
-                <CardDescription>
-                  Your recent activity and engagement
-                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {myComments.map((comment, index) => (
-                    <div
-                      key={index}
-                      className="p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
-                    >
-                      <h5 className="font-medium text-sm mb-1">
-                        {comment.article}
-                      </h5>
-                      <p className="text-xs text-muted-foreground mb-2 italic">
-                        "{comment.comment}"
-                      </p>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>{comment.postedAt}</span>
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-1">
-                            <ThumbsUp className="h-3 w-3" />
-                            <span>{comment.likes}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <MessageCircle className="h-3 w-3" />
-                            <span>{comment.replies}</span>
-                          </div>
-                        </div>
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-500 mt-0.5" />
+                    <div>
+                      <div className="font-medium">Prediction Won!</div>
+                      <div className="text-muted-foreground">
+                        Nepal vs UAE - +15 points
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        2 hours ago
                       </div>
                     </div>
-                  ))}
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <Target className="h-4 w-4 text-blue-500 mt-0.5" />
+                    <div>
+                      <div className="font-medium">New Prediction</div>
+                      <div className="text-muted-foreground">
+                        Man City vs Arsenal
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        1 day ago
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <XCircle className="h-4 w-4 text-red-500 mt-0.5" />
+                    <div>
+                      <div className="font-medium">Prediction Lost</div>
+                      <div className="text-muted-foreground">
+                        Kathmandu FC vs Pokhara
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        2 days ago
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <Button variant="outline" className="w-full mt-4">
-                  View All Activity
-                </Button>
               </CardContent>
             </Card>
           </div>
