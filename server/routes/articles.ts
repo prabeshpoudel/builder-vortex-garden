@@ -271,29 +271,44 @@ export const handleDeleteArticle: RequestHandler = async (
   res,
 ) => {
   try {
+    console.log("Delete article request:", {
+      id: req.params.id,
+      user: req.user?.email,
+    });
+
     if (!req.user) {
+      console.log("Delete article failed: No authentication");
       res.status(401).json({ error: "Authentication required" });
       return;
     }
 
     const { id } = req.params;
     const articleIndex = database.articles.findIndex((a) => a.id === id);
+    console.log("Article lookup:", { id, found: articleIndex !== -1 });
 
     if (articleIndex === -1) {
+      console.log("Delete article failed: Article not found");
       res.status(404).json({ error: "Article not found" });
       return;
     }
 
     const article = database.articles[articleIndex];
+    console.log("Article permissions check:", {
+      userRole: req.user.role,
+      userId: req.user.id,
+      articleAuthorId: article.authorId,
+    });
 
     // Check if user can delete this article (admin or author)
     if (req.user.role !== "admin" && article.authorId !== req.user.id) {
+      console.log("Delete article failed: Access denied");
       res.status(403).json({ error: "Access denied" });
       return;
     }
 
     // Remove article
     database.articles.splice(articleIndex, 1);
+    console.log("Article deleted successfully:", id);
 
     res.json({ message: "Article deleted successfully" });
   } catch (error) {
