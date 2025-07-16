@@ -238,29 +238,31 @@ const ArticleView = () => {
 
             {/* Title */}
             <h1 className="text-4xl font-bold text-slate-900 mb-6 leading-tight">
-              {article.title}
+              {article.title || "Untitled"}
             </h1>
 
             {/* Article Info */}
             <div className="flex flex-wrap items-center gap-6 text-sm text-slate-600 mb-8">
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4" />
-                <span>By {article.author}</span>
+                <span>By {article.author || "Unknown Author"}</span>
               </div>
 
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                <span>{formatDate(article.publishedAt)}</span>
+                <span>
+                  {formatDate(article.publishedAt || new Date().toISOString())}
+                </span>
               </div>
 
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4" />
-                <span>{article.readTime} min read</span>
+                <span>{article.readTime || 0} min read</span>
               </div>
 
               <div className="flex items-center gap-2">
                 <Eye className="h-4 w-4" />
-                <span>{article.views.toLocaleString()} views</span>
+                <span>{(article.views || 0).toLocaleString()} views</span>
               </div>
             </div>
 
@@ -275,7 +277,7 @@ const ArticleView = () => {
                 <Heart
                   className={`mr-2 h-4 w-4 ${isLiked ? "fill-current" : ""}`}
                 />
-                {article.likes} Likes
+                {article.likes || 0} Likes
               </Button>
 
               <Button variant="outline" size="sm" onClick={handleShare}>
@@ -307,7 +309,7 @@ const ArticleView = () => {
             </div>
 
             {/* Tags */}
-            {article.tags.length > 0 && (
+            {article.tags && article.tags.length > 0 && (
               <div className="mt-8 pt-8 border-t">
                 <div className="flex items-center gap-2 mb-4">
                   <Tag className="h-4 w-4 text-slate-600" />
@@ -316,7 +318,7 @@ const ArticleView = () => {
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {article.tags.map((tag) => (
+                  {(article.tags || []).map((tag) => (
                     <Badge key={tag} variant="outline" className="text-xs">
                       {tag}
                     </Badge>
@@ -331,7 +333,7 @@ const ArticleView = () => {
         <div className="mt-8 bg-white rounded-2xl shadow-lg p-8">
           <h3 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
             <MessageSquare className="h-6 w-6" />
-            Comments ({article.comments})
+            Comments ({article.comments || 0})
           </h3>
 
           {/* Add Comment */}
