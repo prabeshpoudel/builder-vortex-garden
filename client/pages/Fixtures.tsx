@@ -653,6 +653,200 @@ const Fixtures = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Prediction Dialog */}
+        <Dialog
+          open={isPredictionDialogOpen}
+          onOpenChange={setIsPredictionDialogOpen}
+        >
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Trophy className="h-5 w-5 text-scoreguff-blue" />
+                Make Your Prediction
+              </DialogTitle>
+              <DialogDescription>
+                {selectedGameForPrediction && (
+                  <>
+                    Predict the outcome for {selectedGameForPrediction.homeTeam}{" "}
+                    vs {selectedGameForPrediction.awayTeam}
+                  </>
+                )}
+              </DialogDescription>
+            </DialogHeader>
+
+            {selectedGameForPrediction && (
+              <div className="space-y-6">
+                {/* Match Preview */}
+                <div className="p-4 bg-muted/50 rounded-lg">
+                  <div className="flex justify-between items-center">
+                    <div className="text-center flex-1">
+                      <div className="font-bold text-lg">
+                        {selectedGameForPrediction.homeTeam}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Home</div>
+                    </div>
+                    <div className="text-center px-4">
+                      <div className="text-muted-foreground text-sm">VS</div>
+                      <div className="text-xs text-muted-foreground">
+                        {selectedGameForPrediction.matchDate}
+                      </div>
+                    </div>
+                    <div className="text-center flex-1">
+                      <div className="font-bold text-lg">
+                        {selectedGameForPrediction.awayTeam}
+                      </div>
+                      <div className="text-sm text-muted-foreground">Away</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Winner Selection */}
+                  <div>
+                    <Label className="text-base font-medium">
+                      Who will win?
+                    </Label>
+                    <RadioGroup
+                      value={predictionFormData.winner}
+                      onValueChange={(value) =>
+                        setPredictionFormData((prev) => ({
+                          ...prev,
+                          winner: value,
+                        }))
+                      }
+                      className="mt-2"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="home" id="home" />
+                        <Label htmlFor="home" className="font-medium">
+                          {selectedGameForPrediction.homeTeam} (Home Win)
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="draw" id="draw" />
+                        <Label htmlFor="draw" className="font-medium">
+                          Draw
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="away" id="away" />
+                        <Label htmlFor="away" className="font-medium">
+                          {selectedGameForPrediction.awayTeam} (Away Win)
+                        </Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  {/* Score Prediction */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="homeScore">
+                        {selectedGameForPrediction.homeTeam} Score (Optional)
+                      </Label>
+                      <Input
+                        id="homeScore"
+                        type="number"
+                        min="0"
+                        value={predictionFormData.homeScore}
+                        onChange={(e) =>
+                          setPredictionFormData((prev) => ({
+                            ...prev,
+                            homeScore: e.target.value,
+                          }))
+                        }
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="awayScore">
+                        {selectedGameForPrediction.awayTeam} Score (Optional)
+                      </Label>
+                      <Input
+                        id="awayScore"
+                        type="number"
+                        min="0"
+                        value={predictionFormData.awayScore}
+                        onChange={(e) =>
+                          setPredictionFormData((prev) => ({
+                            ...prev,
+                            awayScore: e.target.value,
+                          }))
+                        }
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Confidence Level */}
+                  <div>
+                    <Label className="text-base font-medium">
+                      Confidence Level
+                    </Label>
+                    <RadioGroup
+                      value={predictionFormData.confidence}
+                      onValueChange={(value) =>
+                        setPredictionFormData((prev) => ({
+                          ...prev,
+                          confidence: value,
+                        }))
+                      }
+                      className="mt-2"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="low" id="low" />
+                        <Label htmlFor="low">Low - Just a guess</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="medium" id="medium" />
+                        <Label htmlFor="medium">
+                          Medium - Reasonably confident
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="high" id="high" />
+                        <Label htmlFor="high">High - Very confident</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  {/* Notes */}
+                  <div>
+                    <Label htmlFor="notes">Notes (Optional)</Label>
+                    <Textarea
+                      id="notes"
+                      value={predictionFormData.notes}
+                      onChange={(e) =>
+                        setPredictionFormData((prev) => ({
+                          ...prev,
+                          notes: e.target.value,
+                        }))
+                      }
+                      placeholder="Add your reasoning or any additional thoughts..."
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsPredictionDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handlePredictionSubmit}
+                className="bg-scoreguff-blue hover:bg-scoreguff-blue/90"
+                disabled={!predictionFormData.winner}
+              >
+                Save Prediction
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
