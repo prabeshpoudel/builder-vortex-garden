@@ -1,6 +1,11 @@
 import { RequestHandler } from "express";
 import { z } from "zod";
-import { database, updateUser } from "../data/database";
+import {
+  database,
+  updateUser,
+  getAllPredictions,
+  getPredictionsByUser,
+} from "../data/database";
 import { AuthRequest } from "../middleware/auth";
 
 // Admin dashboard stats
