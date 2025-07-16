@@ -37,6 +37,8 @@ export const handleGetDashboardStats: RequestHandler = async (
         total: database.users.length,
         active: database.users.filter((u) => u.status === "active").length,
         admins: database.users.filter((u) => u.role === "admin").length,
+        superAdmins: database.users.filter((u) => u.role === "super_admin")
+          .length,
         banned: database.users.filter((u) => u.status === "banned").length,
       },
       engagement: {
