@@ -1112,12 +1112,12 @@ const Admin = () => {
                         <TableRow key={game.id}>
                           <TableCell>
                             <div>
-                              <p className="font-medium">
+                              <div className="font-medium">
                                 {game.homeTeam} vs {game.awayTeam}
-                              </p>
-                              <p className="text-sm text-muted-foreground">
+                              </div>
+                              <div className="text-sm text-muted-foreground">
                                 {game.sport}
-                              </p>
+                              </div>
                             </div>
                           </TableCell>
                           <TableCell>
