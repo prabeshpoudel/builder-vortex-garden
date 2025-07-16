@@ -279,26 +279,83 @@ const Admin = () => {
     }
   };
 
-  const handleAddGame = () => {
+  const handleAddGame = async () => {
     if (
       gameFormData.homeTeam &&
       gameFormData.awayTeam &&
       gameFormData.league &&
       gameFormData.sport
     ) {
-      addGame(gameFormData as Omit<Game, "id">);
-      setGameFormData({
-        homeTeam: "",
-        awayTeam: "",
-        league: "",
-        sport: "",
-        matchDate: "",
-        matchTime: "",
-        status: "upcoming",
-        venue: "",
-        description: "",
+      try {
+        await addGame(gameFormData as Omit<Game, "id">);
+        setGameFormData({
+          homeTeam: "",
+          awayTeam: "",
+          league: "",
+          sport: "",
+          matchDate: "",
+          matchTime: "",
+          status: "upcoming",
+          venue: "",
+          description: "",
+          predictionSettings: {
+            enabled: true,
+            deadline: "",
+          },
+        });
+        setIsAddGameDialogOpen(false);
+      } catch (error) {
+        console.error("Failed to add game:", error);
+      }
+    }
+  };
+
+  const handleEditGame = (game: Game) => {
+    setEditingGame(game);
+    setGameFormData({
+      ...game,
+      predictionSettings: game.predictionSettings || {
+        enabled: true,
+        deadline: "",
+      },
+    });
+    setIsEditGameDialogOpen(true);
+  };
+
+  const handleUpdateGame = async () => {
+    if (editingGame && gameFormData.homeTeam && gameFormData.awayTeam) {
+      try {
+        await updateGame(editingGame.id, gameFormData);
+        setEditingGame(null);
+        setGameFormData({
+          homeTeam: "",
+          awayTeam: "",
+          league: "",
+          sport: "",
+          matchDate: "",
+          matchTime: "",
+          status: "upcoming",
+          venue: "",
+          description: "",
+          predictionSettings: {
+            enabled: true,
+            deadline: "",
+          },
+        });
+        setIsEditGameDialogOpen(false);
+      } catch (error) {
+        console.error("Failed to update game:", error);
+      }
+    }
+  };
+
+  const handleTogglePrediction = async (gameId: string, enabled: boolean) => {
+    try {
+      await updateGame(gameId, {
+        predictionSettings: { enabled, deadline: "" },
       });
-      setIsAddGameDialogOpen(false);
+    } catch (error) {
+      console.error("Failed to toggle prediction:", error);
     }
   };
 
