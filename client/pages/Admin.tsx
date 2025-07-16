@@ -275,8 +275,10 @@ const Admin = () => {
   const handleDeleteArticle = async (id: string) => {
     try {
       await deleteArticle(id);
+      alert("Article deleted successfully!");
     } catch (error) {
       console.error("Failed to delete article:", error);
+      alert(`Failed to delete article: ${error}`);
     }
   };
 
