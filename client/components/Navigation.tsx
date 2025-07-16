@@ -158,7 +158,7 @@ const Navigation = () => {
                 <Link to="/login">
                   <Button
                     variant="ghost"
-                    className="text-scoreguff-blue hover:bg-scoreguff-blue/10"
+                    className="text-scoreguff-red hover:bg-scoreguff-red/10"
                   >
                     Sign In
                   </Button>
