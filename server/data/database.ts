@@ -695,6 +695,54 @@ This season promises to be the most competitive yet in Nepal football history.
       status: "active" as const,
     },
   ] as Comment[],
+
+  predictions: [
+    {
+      id: "prediction_1",
+      userId: "user_2",
+      userName: "Rajesh Shrestha",
+      matchId: "match_1",
+      matchTitle: "Nepal vs UAE - ACC Premier Cup",
+      prediction: {
+        winner: "home",
+        homeScore: 180,
+        awayScore: 165,
+        confidence: "high",
+      },
+      createdAt: "2024-01-18T10:30:00Z",
+      status: "pending" as const,
+    },
+    {
+      id: "prediction_2",
+      userId: "user_3",
+      userName: "Priya Gurung",
+      matchId: "match_2",
+      matchTitle: "Kathmandu FC vs Pokhara Thunder - NPL",
+      prediction: {
+        winner: "home",
+        homeScore: 2,
+        awayScore: 1,
+        confidence: "medium",
+      },
+      createdAt: "2024-01-19T09:15:00Z",
+      status: "pending" as const,
+    },
+    {
+      id: "prediction_3",
+      userId: "user_4",
+      userName: "Amit Rai",
+      matchId: "match_3",
+      matchTitle: "Manchester City vs Arsenal - Premier League",
+      prediction: {
+        winner: "away",
+        homeScore: 1,
+        awayScore: 2,
+        confidence: "medium",
+      },
+      createdAt: "2024-01-20T14:20:00Z",
+      status: "pending" as const,
+    },
+  ] as Prediction[],
 };
 
 // Helper functions for database operations
