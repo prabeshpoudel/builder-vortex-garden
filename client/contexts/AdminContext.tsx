@@ -38,6 +38,10 @@ export interface Game {
     tv: string[];
     streaming: string[];
   };
+  predictionSettings?: {
+    enabled: boolean;
+    deadline?: string;
+  };
 }
 
 export interface Article {
