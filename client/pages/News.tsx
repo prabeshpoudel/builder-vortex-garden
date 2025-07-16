@@ -25,6 +25,7 @@ import {
   User,
 } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const News = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,6 +47,7 @@ const News = () => {
       id: 1,
       title:
         "Nepal Cricket Team Gears Up for ACC Premier Cup: Exclusive Preview",
+      slug: "nepal-cricket-team-announces-squad-acc-premier-cup",
       excerpt:
         "Captain Rohit Paudel leads a strong 15-member squad as Nepal prepares for the most important regional tournament of the year...",
       image: "/placeholder.svg",
@@ -59,6 +61,7 @@ const News = () => {
     {
       id: 2,
       title: "Premier League: City vs Liverpool - AI Prediction Analysis",
+      slug: "premier-league-title-race-manchester-city-arsenal-analysis",
       excerpt:
         "Our advanced algorithms show 92% confidence in over 2.5 goals for this weekend's title-deciding clash at the Etihad...",
       image: "/placeholder.svg",
@@ -75,6 +78,7 @@ const News = () => {
     {
       id: 3,
       title: "Nepal Premier League 2024: Complete Team Analysis",
+      slug: "nepal-premier-league-2024-complete-season-preview",
       excerpt:
         "Detailed breakdown of all 8 teams competing in this year's Nepal Premier League, including key players and predictions...",
       image: "/placeholder.svg",
@@ -87,6 +91,7 @@ const News = () => {
     {
       id: 4,
       title: "SAFF Championship: Nepal's Road to Glory",
+      slug: "saff-championship-nepal-road-to-glory",
       excerpt:
         "Nepal national football team's preparation and strategy for the upcoming SAFF Championship in Maldives...",
       image: "/placeholder.svg",
@@ -99,6 +104,7 @@ const News = () => {
     {
       id: 5,
       title: "IPL 2024: Top Nepali Players to Watch",
+      slug: "ipl-2024-top-nepali-players-to-watch",
       excerpt:
         "Sandeep Lamichhane and other Nepali talents making waves in the Indian Premier League this season...",
       image: "/placeholder.svg",
@@ -111,6 +117,7 @@ const News = () => {
     {
       id: 6,
       title: "Champions League Quarter-Finals: AI Predictions",
+      slug: "champions-league-quarter-finals-ai-predictions",
       excerpt:
         "Machine learning analysis of the remaining 8 teams and their chances of reaching the final in Istanbul...",
       image: "/placeholder.svg",
@@ -123,6 +130,7 @@ const News = () => {
     {
       id: 7,
       title: "Volleyball: Nepal Women's Team Asian Championship Prep",
+      slug: "volleyball-nepal-women-team-asian-championship-prep",
       excerpt:
         "Nepal women's volleyball team intensifies training for the Asian Championship with new coach and strategy...",
       image: "/placeholder.svg",
@@ -135,6 +143,7 @@ const News = () => {
     {
       id: 8,
       title: "Tennis: Australian Open Nepal Connection",
+      slug: "tennis-australian-open-nepal-connection",
       excerpt:
         "How Nepal's tennis development programs are inspiring the next generation of players...",
       image: "/placeholder.svg",
