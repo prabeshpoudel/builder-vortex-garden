@@ -847,3 +847,51 @@ export const getCommentsByArticle = (articleId: string): Comment[] => {
     (comment) => comment.articleId === articleId && comment.status === "active",
   );
 };
+
+export const createPrediction = (
+  predictionData: Omit<Prediction, "id">,
+): Prediction => {
+  const newPrediction: Prediction = {
+    id: `prediction_${Date.now()}`,
+    ...predictionData,
+  };
+  database.predictions.push(newPrediction);
+  return newPrediction;
+};
+
+export const getPredictionsByUser = (userId: string): Prediction[] => {
+  return database.predictions.filter(
+    (prediction) => prediction.userId === userId,
+  );
+};
+
+export const getPredictionsByMatch = (matchId: string): Prediction[] => {
+  return database.predictions.filter(
+    (prediction) => prediction.matchId === matchId,
+  );
+};
+
+export const getAllPredictions = (): Prediction[] => {
+  return [...database.predictions];
+};
+
+export const updatePredictionResult = (
+  id: string,
+  result: {
+    isCorrect: boolean;
+    points: number;
+    status: "won" | "lost" | "void";
+  },
+): Prediction | null => {
+  const predictionIndex = database.predictions.findIndex(
+    (prediction) => prediction.id === id,
+  );
+  if (predictionIndex === -1) return null;
+
+  database.predictions[predictionIndex] = {
+    ...database.predictions[predictionIndex],
+    result: { isCorrect: result.isCorrect, points: result.points },
+    status: result.status,
+  };
+  return database.predictions[predictionIndex];
+};
