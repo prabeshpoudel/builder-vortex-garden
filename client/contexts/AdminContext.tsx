@@ -327,7 +327,6 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
   const value: AdminContextType = {
     games,
     articles,
-    isAdmin,
     isLoading,
     addGame,
     updateGame,
@@ -340,7 +339,6 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
     deleteArticle,
     togglePinArticle,
     toggleTrendingArticle,
-    setIsAdmin: handleSetIsAdmin,
     refreshData,
   };
 
