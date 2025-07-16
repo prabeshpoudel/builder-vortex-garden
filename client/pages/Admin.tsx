@@ -223,36 +223,52 @@ const Admin = () => {
   ];
 
   const handleAddArticle = async () => {
-    if (articleFormData.title && articleFormData.content) {
-      try {
-        await addArticle({
-          title: articleFormData.title,
-          excerpt: articleFormData.excerpt,
-          content: articleFormData.content,
-          category: articleFormData.category,
-          status: articleFormData.status,
-          isPinned: articleFormData.isPinned,
-          isTrending: articleFormData.isTrending,
-          isNepal: articleFormData.isNepal,
-          tags: [], // Add tags support later
-        });
+    // Client-side validation
+    if (!articleFormData.title || articleFormData.title.length < 5) {
+      alert("Title must be at least 5 characters");
+      return;
+    }
+    if (!articleFormData.excerpt || articleFormData.excerpt.length < 10) {
+      alert("Excerpt must be at least 10 characters");
+      return;
+    }
+    if (!articleFormData.content || articleFormData.content.length < 50) {
+      alert("Content must be at least 50 characters");
+      return;
+    }
+    if (!articleFormData.category) {
+      alert("Category is required");
+      return;
+    }
 
-        setArticleFormData({
-          title: "",
-          excerpt: "",
-          content: "",
-          category: "",
-          author: "",
-          status: "draft",
-          isPinned: false,
-          isTrending: false,
-          isNepal: false,
-        });
-        setIsAddArticleDialogOpen(false);
-      } catch (error) {
-        console.error("Failed to add article:", error);
-        // TODO: Show error toast
-      }
+    try {
+      await addArticle({
+        title: articleFormData.title,
+        excerpt: articleFormData.excerpt,
+        content: articleFormData.content,
+        category: articleFormData.category,
+        status: articleFormData.status,
+        isPinned: articleFormData.isPinned,
+        isTrending: articleFormData.isTrending,
+        isNepal: articleFormData.isNepal,
+        tags: [], // Add tags support later
+      });
+
+      setArticleFormData({
+        title: "",
+        excerpt: "",
+        content: "",
+        category: "",
+        author: "",
+        status: "draft",
+        isPinned: false,
+        isTrending: false,
+        isNepal: false,
+      });
+      setIsAddArticleDialogOpen(false);
+    } catch (error) {
+      console.error("Failed to add article:", error);
+      alert(`Failed to add article: ${error}`);
     }
   };
 
