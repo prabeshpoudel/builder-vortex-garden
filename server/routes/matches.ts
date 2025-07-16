@@ -147,6 +147,7 @@ export const handleCreateMatch: RequestHandler = async (
       status: "upcoming" as const,
       homeTeamLogo: "/placeholder.svg",
       awayTeamLogo: "/placeholder.svg",
+      predictionSettings: matchData.predictionSettings || { enabled: true },
     };
 
     database.matches.push(newMatch);
