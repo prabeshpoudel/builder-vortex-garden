@@ -67,7 +67,6 @@ export interface Article {
 interface AdminContextType {
   games: Game[];
   articles: Article[];
-  isAdmin: boolean;
   isLoading: boolean;
 
   // Game management
@@ -97,9 +96,6 @@ interface AdminContextType {
   deleteArticle: (id: string) => Promise<void>;
   togglePinArticle: (id: string) => Promise<void>;
   toggleTrendingArticle: (id: string) => Promise<void>;
-
-  // Admin state
-  setIsAdmin: (isAdmin: boolean) => void;
 
   // Data fetching
   refreshData: () => Promise<void>;
