@@ -82,24 +82,26 @@ const ArticleView = () => {
 
     const fetchArticle = async () => {
       try {
-        const response = await fetch(`/api/articles?slug=${slug}`);
-        if (!response.ok) throw new Error("Article not found");
+        const response = await fetch(`/api/articles/${slug}`);
+        if (!response.ok) {
+          if (response.status === 404) {
+            navigate("/404");
+            return;
+          }
+          throw new Error("Failed to fetch article");
+        }
 
         const data = await response.json();
-        const foundArticle = data.articles?.find(
-          (a: Article) => a.slug === slug,
-        );
 
-        if (!foundArticle) {
+        if (!data.article) {
           navigate("/404");
           return;
         }
 
-        setArticle(foundArticle);
+        setArticle(data.article);
 
-        // Fetch comments for this article
-        // For now, using mock data since we don't have comment API yet
-        setComments([]);
+        // Set comments from API response
+        setComments(data.comments || []);
       } catch (error) {
         console.error("Error fetching article:", error);
         navigate("/404");
