@@ -11,7 +11,7 @@ export interface AuthRequest extends Request {
     id: string;
     email: string;
     name: string;
-    role: "user" | "admin";
+    role: "user" | "admin" | "super_admin";
   };
 }
 
@@ -68,8 +68,23 @@ export const requireAdmin = (
   res: Response,
   next: NextFunction,
 ): void => {
-  if (!req.user || req.user.role !== "admin") {
+  if (
+    !req.user ||
+    (req.user.role !== "admin" && req.user.role !== "super_admin")
+  ) {
     res.status(403).json({ error: "Admin access required" });
+    return;
+  }
+  next();
+};
+
+export const requireSuperAdmin = (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): void => {
+  if (!req.user || req.user.role !== "super_admin") {
+    res.status(403).json({ error: "Super admin access required" });
     return;
   }
   next();
