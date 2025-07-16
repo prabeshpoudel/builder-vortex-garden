@@ -305,7 +305,23 @@ const ArticleView = () => {
               <div
                 className="text-slate-800 leading-relaxed text-lg space-y-4 [&>h1]:text-3xl [&>h1]:font-bold [&>h1]:mt-8 [&>h1]:mb-4 [&>h2]:text-2xl [&>h2]:font-semibold [&>h2]:mt-6 [&>h2]:mb-3 [&>h3]:text-xl [&>h3]:font-medium [&>h3]:mt-4 [&>h3]:mb-2 [&>p]:mb-4 [&>ul]:ml-6 [&>ul]:mb-4 [&>ol]:ml-6 [&>ol]:mb-4 [&>li]:mb-1"
                 dangerouslySetInnerHTML={{
-                  __html: (article.content || "").replace(/\n/g, "<br />"),
+                  __html: (article.content || "")
+                    .replace(/^# (.*$)/gm, "<h1>$1</h1>")
+                    .replace(/^## (.*$)/gm, "<h2>$1</h2>")
+                    .replace(/^### (.*$)/gm, "<h3>$1</h3>")
+                    .replace(/^\* (.*$)/gm, "<li>$1</li>")
+                    .replace(/^- (.*$)/gm, "<li>$1</li>")
+                    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                    .replace(/\n\n/g, "</p><p>")
+                    .replace(/^(?!<[h|l|p])/gm, "<p>")
+                    .replace(/(?<!>)$/gm, "</p>")
+                    .replace(/<p><\/p>/g, "")
+                    .replace(/<p>(<h[1-6]>)/g, "$1")
+                    .replace(/(<\/h[1-6]>)<\/p>/g, "$1")
+                    .replace(/<p>(<li>)/g, "<ul>$1")
+                    .replace(/(<\/li>)<\/p>/g, "$1</ul>")
+                    .replace(/(<\/ul>)<ul>/g, "")
+                    .replace(/\n/g, "<br />"),
                 }}
               />
             </div>
