@@ -46,7 +46,6 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
-  const { isAdmin, setIsAdmin } = useAdmin();
 
   const navItems = [
     { href: "/", label: "Home", icon: Home },
