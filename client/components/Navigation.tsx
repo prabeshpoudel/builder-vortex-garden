@@ -54,7 +54,7 @@ const Navigation = () => {
     { href: "/fixtures", label: "Fixtures", icon: Calendar },
     ...(isAuthenticated
       ? [
-          { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+          { href: "/dashboard", label: "My Dashboard", icon: BarChart3 },
           { href: "/leaderboard", label: "Leaderboard", icon: Trophy },
           { href: "/analytics", label: "Analytics", icon: TrendingUp },
         ]
