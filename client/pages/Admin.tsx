@@ -49,6 +49,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAdmin, Game } from "@/contexts/AdminContext";
 import { useUserManagement } from "@/contexts/UserManagementContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Plus,
   Edit,
