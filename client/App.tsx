@@ -10,7 +10,6 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Fixtures from "./pages/Fixtures";
 import Leaderboard from "./pages/Leaderboard";
-import Analytics from "./pages/Analytics";
 import News from "./pages/News";
 import ArticleView from "./pages/ArticleView";
 import Login from "./pages/Login";
