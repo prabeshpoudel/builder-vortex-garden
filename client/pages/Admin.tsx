@@ -94,6 +94,35 @@ interface Article {
 }
 
 const Admin = () => {
+  const { user, isAuthenticated } = useAuth();
+
+  // Check if user has admin access
+  if (
+    !isAuthenticated ||
+    !user ||
+    (user.role !== "admin" && user.role !== "super_admin")
+  ) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30 flex items-center justify-center">
+        <Card className="w-full max-w-md mx-4">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl text-red-600">
+              Access Denied
+            </CardTitle>
+            <CardDescription>
+              You don't have permission to access the admin panel.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center">
+            <p className="text-sm text-muted-foreground mb-4">
+              Only authorized administrators can access this area.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   const {
     games,
     addGame,
