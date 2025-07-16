@@ -86,21 +86,43 @@ export const handleUpdateUserRole: RequestHandler = async (
   res,
 ) => {
   try {
-    if (!req.user || req.user.role !== "admin") {
-      res.status(403).json({ error: "Admin access required" });
-      return;
-    }
-
     const { userId } = req.params;
     const { role } = z
       .object({
-        role: z.enum(["user", "admin"]),
+        role: z.enum(["user", "admin", "super_admin"]),
       })
       .parse(req.body);
 
-    // Prevent admin from changing their own role
+    // Only super admins can promote to admin or super_admin
+    if (role === "admin" || role === "super_admin") {
+      if (!req.user || req.user.role !== "super_admin") {
+        res
+          .status(403)
+          .json({ error: "Super admin access required to promote users" });
+        return;
+      }
+    } else {
+      // Regular admins can demote users to user role
+      if (
+        !req.user ||
+        (req.user.role !== "admin" && req.user.role !== "super_admin")
+      ) {
+        res.status(403).json({ error: "Admin access required" });
+        return;
+      }
+    }
+
+    // Prevent changing your own role
     if (userId === req.user.id) {
       res.status(400).json({ error: "Cannot change your own role" });
+      return;
+    }
+
+    // Prevent promoting to super_admin unless you are super_admin
+    if (role === "super_admin" && req.user.role !== "super_admin") {
+      res
+        .status(403)
+        .json({ error: "Only super admins can create new super admins" });
       return;
     }
 
