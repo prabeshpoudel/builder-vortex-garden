@@ -235,28 +235,28 @@ const Admin = () => {
     }
   };
 
-  const handleDeleteArticle = (id: string) => {
-    setArticles(articles.filter((article) => article.id !== id));
+  const handleDeleteArticle = async (id: string) => {
+    try {
+      await deleteArticle(id);
+    } catch (error) {
+      console.error("Failed to delete article:", error);
+    }
   };
 
-  const togglePinArticle = (id: string) => {
-    setArticles(
-      articles.map((article) =>
-        article.id === id
-          ? { ...article, isPinned: !article.isPinned }
-          : article,
-      ),
-    );
+  const handleTogglePinArticle = async (id: string) => {
+    try {
+      await togglePinArticle(id);
+    } catch (error) {
+      console.error("Failed to toggle pin article:", error);
+    }
   };
 
-  const toggleTrendingArticle = (id: string) => {
-    setArticles(
-      articles.map((article) =>
-        article.id === id
-          ? { ...article, isTrending: !article.isTrending }
-          : article,
-      ),
-    );
+  const handleToggleTrendingArticle = async (id: string) => {
+    try {
+      await toggleTrendingArticle(id);
+    } catch (error) {
+      console.error("Failed to toggle trending article:", error);
+    }
   };
 
   const handleAddGame = () => {
