@@ -59,9 +59,9 @@ export default {
         },
         scoreguff: {
           blue: "hsl(var(--scoreguff-blue))",
-          green: "hsl(var(--scoreguff-green))",
+          red: "hsl(var(--scoreguff-red))",
           dark: "hsl(var(--scoreguff-dark))",
-          gold: "hsl(var(--scoreguff-gold))",
+          white: "hsl(var(--scoreguff-white))",
         },
       },
       borderRadius: {
