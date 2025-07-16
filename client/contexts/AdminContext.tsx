@@ -154,17 +154,17 @@ const apiRequest = async (
 export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
   const [games, setGames] = React.useState<Game[]>([]);
   const [articles, setArticles] = React.useState<Article[]>([]);
-  const [isAdmin, setIsAdmin] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+  const { user } = useAuth();
 
   React.useEffect(() => {
     const initializeData = async () => {
       await loadMatches();
       await loadArticles();
+      setIsLoading(false);
+    };
 
-      // Load admin status from localStorage
-      const storedAdminStatus = localStorage.getItem("scoreguff_admin");
-      if (storedAdminStatus) {
+    initializeData();
         setIsAdmin(JSON.parse(storedAdminStatus));
       }
 
