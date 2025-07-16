@@ -203,6 +203,26 @@ export function createServer() {
     handleUpdateCommentStatus,
   );
 
+  // Prediction management
+  app.get(
+    "/api/admin/predictions",
+    authenticateToken,
+    requireAdmin,
+    handleGetAllPredictions,
+  );
+  app.get(
+    "/api/admin/predictions/stats",
+    authenticateToken,
+    requireAdmin,
+    handleGetPredictionStats,
+  );
+  app.get(
+    "/api/admin/users/:userId/predictions",
+    authenticateToken,
+    requireAdmin,
+    handleGetUserPredictions,
+  );
+
   // Error handling middleware
   app.use(
     (
