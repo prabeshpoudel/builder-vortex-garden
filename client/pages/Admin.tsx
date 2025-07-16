@@ -957,6 +957,123 @@ const Admin = () => {
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
+
+              {/* Edit Match Dialog */}
+              <Dialog
+                open={isEditGameDialogOpen}
+                onOpenChange={setIsEditGameDialogOpen}
+              >
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>Edit Match</DialogTitle>
+                    <DialogDescription>
+                      Update match details and settings
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Home Team</Label>
+                      <Input
+                        value={gameFormData.homeTeam}
+                        onChange={(e) =>
+                          setGameFormData({
+                            ...gameFormData,
+                            homeTeam: e.target.value,
+                          })
+                        }
+                        placeholder="Enter home team"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Away Team</Label>
+                      <Input
+                        value={gameFormData.awayTeam}
+                        onChange={(e) =>
+                          setGameFormData({
+                            ...gameFormData,
+                            awayTeam: e.target.value,
+                          })
+                        }
+                        placeholder="Enter away team"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Status</Label>
+                      <Select
+                        value={gameFormData.status}
+                        onValueChange={(value) =>
+                          setGameFormData({
+                            ...gameFormData,
+                            status: value as any,
+                          })
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="upcoming">Upcoming</SelectItem>
+                          <SelectItem value="live">Live</SelectItem>
+                          <SelectItem value="completed">Completed</SelectItem>
+                          <SelectItem value="postponed">Postponed</SelectItem>
+                          <SelectItem value="cancelled">Cancelled</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Venue</Label>
+                      <Input
+                        value={gameFormData.venue}
+                        onChange={(e) =>
+                          setGameFormData({
+                            ...gameFormData,
+                            venue: e.target.value,
+                          })
+                        }
+                        placeholder="Match venue"
+                      />
+                    </div>
+                    <div className="md:col-span-2 space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="editEnablePredictions"
+                          checked={
+                            gameFormData.predictionSettings?.enabled || false
+                          }
+                          onChange={(e) =>
+                            setGameFormData({
+                              ...gameFormData,
+                              predictionSettings: {
+                                ...gameFormData.predictionSettings,
+                                enabled: e.target.checked,
+                              },
+                            })
+                          }
+                          className="rounded"
+                        />
+                        <Label htmlFor="editEnablePredictions">
+                          Enable Predictions for this match
+                        </Label>
+                      </div>
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsEditGameDialogOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleUpdateGame}
+                      className="bg-scoreguff-blue hover:bg-scoreguff-blue/90"
+                    >
+                      Update Match
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
 
             <Card className="border-2">
