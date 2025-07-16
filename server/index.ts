@@ -50,6 +50,9 @@ import {
   handleUpdateCommentStatus,
   handleGetSystemHealth,
   handleGetAnalytics,
+  handleGetAllPredictions,
+  handleGetUserPredictions,
+  handleGetPredictionStats,
 } from "./routes/admin";
 
 // Middleware
