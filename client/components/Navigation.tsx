@@ -91,7 +91,7 @@ const Navigation = () => {
                         className={cn(
                           "group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50",
                           isActive(item.href) &&
-                            "bg-scoreguff-blue/10 text-scoreguff-blue border border-scoreguff-blue/20",
+                            "bg-scoreguff-red/10 text-scoreguff-red border border-scoreguff-red/20",
                         )}
                       >
                         <item.icon className="mr-2 h-4 w-4" />
