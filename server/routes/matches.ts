@@ -56,6 +56,12 @@ const createMatchSchema = z.object({
       streaming: z.array(z.string()).default([]),
     })
     .optional(),
+  predictionSettings: z
+    .object({
+      enabled: z.boolean().default(true),
+      deadline: z.string().optional(),
+    })
+    .optional(),
 });
 
 export const handleGetMatches: RequestHandler = async (req, res) => {
