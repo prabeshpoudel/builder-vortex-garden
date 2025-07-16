@@ -902,6 +902,44 @@ const Admin = () => {
                         placeholder="Match venue"
                       />
                     </div>
+                    <div className="md:col-span-2 space-y-2">
+                      <Label>Description</Label>
+                      <Textarea
+                        value={gameFormData.description}
+                        onChange={(e) =>
+                          setGameFormData({
+                            ...gameFormData,
+                            description: e.target.value,
+                          })
+                        }
+                        placeholder="Match description"
+                        rows={3}
+                      />
+                    </div>
+                    <div className="md:col-span-2 space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="enablePredictions"
+                          checked={
+                            gameFormData.predictionSettings?.enabled || false
+                          }
+                          onChange={(e) =>
+                            setGameFormData({
+                              ...gameFormData,
+                              predictionSettings: {
+                                ...gameFormData.predictionSettings,
+                                enabled: e.target.checked,
+                              },
+                            })
+                          }
+                          className="rounded"
+                        />
+                        <Label htmlFor="enablePredictions">
+                          Enable Predictions for this match
+                        </Label>
+                      </div>
+                    </div>
                   </div>
                   <DialogFooter>
                     <Button
