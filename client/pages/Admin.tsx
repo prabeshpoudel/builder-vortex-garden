@@ -182,6 +182,10 @@ const Admin = () => {
     status: "upcoming",
     venue: "",
     description: "",
+    predictionSettings: {
+      enabled: true,
+      deadline: "",
+    },
   });
 
   const [articleFormData, setArticleFormData] = useState<Partial<Article>>({
