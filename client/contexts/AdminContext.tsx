@@ -318,11 +318,6 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
   const getCompletedGames = () =>
     games.filter((game) => game.status === "completed");
 
-  const handleSetIsAdmin = (adminStatus: boolean) => {
-    setIsAdmin(adminStatus);
-    localStorage.setItem("scoreguff_admin", JSON.stringify(adminStatus));
-  };
-
   const refreshData = async () => {
     setIsLoading(true);
     await Promise.all([loadMatches(), loadArticles()]);
