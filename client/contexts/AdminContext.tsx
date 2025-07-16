@@ -165,13 +165,6 @@ export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
     };
 
     initializeData();
-        setIsAdmin(JSON.parse(storedAdminStatus));
-      }
-
-      setIsLoading(false);
-    };
-
-    initializeData();
   }, []);
 
   const loadMatches = async () => {
