@@ -74,6 +74,7 @@ import {
   Image,
   FileText,
   Tag,
+  Settings,
 } from "lucide-react";
 
 interface Article {
