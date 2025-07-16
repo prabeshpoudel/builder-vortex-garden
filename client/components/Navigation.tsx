@@ -202,7 +202,7 @@ const Navigation = () => {
                         className={cn(
                           "flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground",
                           isActive(item.href) &&
-                            "bg-scoreguff-blue/10 text-scoreguff-blue",
+                            "bg-scoreguff-red/10 text-scoreguff-red",
                         )}
                       >
                         <item.icon className="h-5 w-5" />
