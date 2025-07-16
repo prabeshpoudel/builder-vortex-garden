@@ -141,10 +141,44 @@ const hashPassword = (password: string): string => {
 export const database = {
   users: [
     {
-      id: "user_1",
-      email: "admin@scoreguff.com",
+      id: "user_super_admin",
+      email: "prabeshpoud@gmail.com",
+      password: hashPassword("superadmin123"),
+      name: "Prabesh Poudyal",
+      role: "super_admin" as const,
+      avatar: "/placeholder.svg",
+      location: "Kathmandu, Nepal",
+      joinedDate: "2023-01-01",
+      lastLogin: new Date().toISOString(),
+      status: "active" as const,
+      preferences: {
+        favoriteTeams: [
+          "Nepal National Cricket Team",
+          "Nepal National Football Team",
+        ],
+        favoriteLeagues: [
+          "ACC Premier Cup",
+          "SAFF Championship",
+          "Premier League",
+        ],
+        notificationSettings: {
+          email: true,
+          push: true,
+          breakingNews: true,
+        },
+      },
+      stats: {
+        articlesRead: 456,
+        commentsPosted: 89,
+        articlesBookmarked: 123,
+        categoriesFollowed: ["Cricket", "Football", "Admin"],
+      },
+    },
+    {
+      id: "user_admin",
+      email: "scoreguff@gmail.com",
       password: hashPassword("admin123"),
-      name: "Admin User",
+      name: "ScoreGuff Admin",
       role: "admin" as const,
       avatar: "/placeholder.svg",
       location: "Kathmandu, Nepal",
@@ -164,9 +198,9 @@ export const database = {
         },
       },
       stats: {
-        articlesRead: 0,
-        commentsPosted: 0,
-        articlesBookmarked: 0,
+        articlesRead: 234,
+        commentsPosted: 45,
+        articlesBookmarked: 67,
         categoriesFollowed: ["Cricket", "Football"],
       },
     },
