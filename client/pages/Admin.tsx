@@ -125,12 +125,18 @@ const Admin = () => {
 
   const {
     games,
+    articles,
     addGame,
     updateGame,
     deleteGame,
     getUpcomingGames,
     getLiveGames,
     getCompletedGames,
+    addArticle,
+    updateArticle,
+    deleteArticle,
+    togglePinArticle,
+    toggleTrendingArticle,
   } = useAdmin();
 
   const {
@@ -143,41 +149,6 @@ const Admin = () => {
     getAdminUsers,
     getBannedUsers,
   } = useUserManagement();
-
-  // News Management State
-  const [articles, setArticles] = useState<Article[]>([
-    {
-      id: "1",
-      title: "Nepal Cricket Team Announces Squad for ACC Premier Cup",
-      excerpt:
-        "Captain Rohit Paudel leads 15-member squad for regional championship",
-      content: "Full article content...",
-      category: "Cricket",
-      author: "Rajesh Shrestha",
-      publishedAt: "2024-01-19T10:00:00Z",
-      status: "featured",
-      isPinned: true,
-      isTrending: true,
-      views: 12500,
-      comments: 45,
-      isNepal: true,
-    },
-    {
-      id: "2",
-      title: "Premier League Title Race Analysis",
-      excerpt: "Manchester City and Arsenal battle for the championship",
-      content: "Full article content...",
-      category: "Football",
-      author: "Sarah Wilson",
-      publishedAt: "2024-01-18T14:30:00Z",
-      status: "published",
-      isPinned: false,
-      isTrending: true,
-      views: 8900,
-      comments: 23,
-      isNepal: false,
-    },
-  ]);
 
   const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useState(false);
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useState(false);
