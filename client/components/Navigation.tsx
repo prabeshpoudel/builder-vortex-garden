@@ -58,7 +58,9 @@ const Navigation = () => {
           { href: "/analytics", label: "Analytics", icon: TrendingUp },
         ]
       : []),
-    ...(isAdmin
+    ...(isAuthenticated &&
+    user &&
+    (user.role === "admin" || user.role === "super_admin")
       ? [{ href: "/admin", label: "Admin Panel", icon: Settings }]
       : []),
   ];
