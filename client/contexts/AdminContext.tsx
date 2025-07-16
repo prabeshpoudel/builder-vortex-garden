@@ -146,12 +146,18 @@ const apiRequest = async (
     },
   });
 
-  const data = await response.json();
-
   if (!response.ok) {
-    throw new Error(data.error || "API request failed");
+    let errorMessage = "API request failed";
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.error || errorMessage;
+    } catch {
+      // If we can't parse JSON, use default message
+    }
+    throw new Error(errorMessage);
   }
 
+  const data = await response.json();
   return data;
 };
 
