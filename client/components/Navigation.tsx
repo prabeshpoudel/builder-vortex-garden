@@ -223,7 +223,7 @@ const Navigation = () => {
                         <Link
                           to="/signup"
                           onClick={() => setIsOpen(false)}
-                          className="flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors bg-scoreguff-blue text-white hover:bg-scoreguff-blue/90"
+                          className="flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors bg-scoreguff-red text-white hover:bg-scoreguff-red/90"
                         >
                           <User className="h-5 w-5" />
                           <span>Sign Up</span>
