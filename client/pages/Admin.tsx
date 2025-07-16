@@ -663,7 +663,9 @@ const Admin = () => {
                           <TableCell>
                             <div>
                               <div className="flex items-center gap-2 mb-1">
-                                                                <div className="font-medium">{article.title}</div>
+                                <div className="font-medium">
+                                  {article.title}
+                                </div>
                                 {article.isPinned && (
                                   <PinIcon className="h-4 w-4 text-scoreguff-blue" />
                                 )}
@@ -671,14 +673,14 @@ const Admin = () => {
                                   <TrendingUp className="h-4 w-4 text-orange-500" />
                                 )}
                               </div>
-                                                            <div className="text-sm text-muted-foreground">
+                              <div className="text-sm text-muted-foreground">
                                 By {article.author}
                               </div>
-                                                            <div className="text-xs text-muted-foreground">
+                              <div className="text-xs text-muted-foreground">
                                 {new Date(
                                   article.publishedAt,
                                 ).toLocaleDateString()}
-                              </p>
+                              </div>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -1226,11 +1228,11 @@ const Admin = () => {
                         <TableRow key={user.id}>
                           <TableCell>
                             <div>
-                                                            <div className="font-medium">{user.name}</div>
-                                                            <div className="text-sm text-muted-foreground">
+                              <div className="font-medium">{user.name}</div>
+                              <div className="text-sm text-muted-foreground">
                                 {user.email}
                               </div>
-                                                            <div className="text-xs text-muted-foreground">
+                              <div className="text-xs text-muted-foreground">
                                 Joined: {user.joinedDate}
                               </div>
                             </div>
