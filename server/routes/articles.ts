@@ -194,13 +194,16 @@ export const handleCreateArticle: RequestHandler = async (
     };
 
     database.articles.unshift(newArticle);
+    console.log("Article created successfully:", newArticle.id);
 
     res.status(201).json({
       message: "Article created successfully",
       article: newArticle,
     });
   } catch (error) {
+    console.error("Article creation error:", error);
     if (error instanceof z.ZodError) {
+      console.log("Validation errors:", error.errors);
       res.status(400).json({
         error: "Validation error",
         details: error.errors,
