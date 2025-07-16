@@ -1137,15 +1137,42 @@ const Admin = () => {
                               </span>
                             </div>
                           </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="checkbox"
+                                checked={
+                                  game.predictionSettings?.enabled || false
+                                }
+                                onChange={(e) =>
+                                  handleTogglePrediction(
+                                    game.id,
+                                    e.target.checked,
+                                  )
+                                }
+                                className="rounded"
+                              />
+                              <span className="text-sm">
+                                {game.predictionSettings?.enabled
+                                  ? "Enabled"
+                                  : "Disabled"}
+                              </span>
+                            </div>
+                          </TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">
-                              <Button variant="outline" size="sm">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleEditGame(game)}
+                              >
                                 <Edit className="h-4 w-4" />
                               </Button>
                               <Button
                                 variant="outline"
                                 size="sm"
                                 className="text-destructive"
+                                onClick={() => deleteGame(game.id)}
                               >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
