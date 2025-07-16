@@ -157,8 +157,20 @@ const apiRequest = async (
     throw new Error(errorMessage);
   }
 
-  const data = await response.json();
-  return data;
+  // For DELETE requests, the response might be empty
+  if (options.method === "DELETE" && response.status === 204) {
+    return {};
+  }
+
+  // Check if response has content before trying to parse JSON
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    const data = await response.json();
+    return data;
+  }
+
+  // If no JSON content, return empty object
+  return {};
 };
 
 export const AdminProvider: React.FC<AdminProviderProps> = ({ children }) => {
