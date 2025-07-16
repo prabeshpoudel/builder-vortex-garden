@@ -414,3 +414,153 @@ export const handleGetAnalytics: RequestHandler = async (
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// Prediction management
+export const handleGetAllPredictions: RequestHandler = async (
+  req: AuthRequest,
+  res,
+) => {
+  try {
+    if (
+      !req.user ||
+      (req.user.role !== "admin" && req.user.role !== "super_admin")
+    ) {
+      res.status(403).json({ error: "Admin access required" });
+      return;
+    }
+
+    const predictions = getAllPredictions().map((prediction) => ({
+      ...prediction,
+      // Add user details
+      userInfo: {
+        id: prediction.userId,
+        name: prediction.userName,
+        email: database.users.find((u) => u.id === prediction.userId)?.email,
+      },
+      // Add match details
+      matchInfo: {
+        id: prediction.matchId,
+        title: prediction.matchTitle,
+        match: database.matches.find((m) => m.id === prediction.matchId),
+      },
+    }));
+
+    // Sort by creation date (newest first)
+    predictions.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+
+    res.json({ predictions });
+  } catch (error) {
+    console.error("Get all predictions error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const handleGetUserPredictions: RequestHandler = async (
+  req: AuthRequest,
+  res,
+) => {
+  try {
+    if (
+      !req.user ||
+      (req.user.role !== "admin" && req.user.role !== "super_admin")
+    ) {
+      res.status(403).json({ error: "Admin access required" });
+      return;
+    }
+
+    const { userId } = req.params;
+    const user = database.users.find((u) => u.id === userId);
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    const predictions = getPredictionsByUser(userId).map((prediction) => ({
+      ...prediction,
+      // Add match details
+      matchInfo: {
+        id: prediction.matchId,
+        title: prediction.matchTitle,
+        match: database.matches.find((m) => m.id === prediction.matchId),
+      },
+    }));
+
+    // Sort by creation date (newest first)
+    predictions.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+
+    res.json({
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      },
+      predictions,
+    });
+  } catch (error) {
+    console.error("Get user predictions error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const handleGetPredictionStats: RequestHandler = async (
+  req: AuthRequest,
+  res,
+) => {
+  try {
+    if (
+      !req.user ||
+      (req.user.role !== "admin" && req.user.role !== "super_admin")
+    ) {
+      res.status(403).json({ error: "Admin access required" });
+      return;
+    }
+
+    const allPredictions = getAllPredictions();
+
+    const stats = {
+      total: allPredictions.length,
+      pending: allPredictions.filter((p) => p.status === "pending").length,
+      won: allPredictions.filter((p) => p.status === "won").length,
+      lost: allPredictions.filter((p) => p.status === "lost").length,
+      void: allPredictions.filter((p) => p.status === "void").length,
+      byConfidence: {
+        high: allPredictions.filter((p) => p.prediction.confidence === "high")
+          .length,
+        medium: allPredictions.filter(
+          (p) => p.prediction.confidence === "medium",
+        ).length,
+        low: allPredictions.filter((p) => p.prediction.confidence === "low")
+          .length,
+      },
+      topPredictors: database.users
+        .map((user) => ({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          predictions: allPredictions.filter((p) => p.userId === user.id)
+            .length,
+          won: allPredictions.filter(
+            (p) => p.userId === user.id && p.status === "won",
+          ).length,
+          points: allPredictions
+            .filter((p) => p.userId === user.id)
+            .reduce((sum, p) => sum + (p.result?.points || 0), 0),
+        }))
+        .filter((user) => user.predictions > 0)
+        .sort((a, b) => b.points - a.points)
+        .slice(0, 10),
+    };
+
+    res.json({ stats });
+  } catch (error) {
+    console.error("Get prediction stats error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
