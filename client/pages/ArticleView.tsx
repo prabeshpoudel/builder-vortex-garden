@@ -302,28 +302,75 @@ const ArticleView = () => {
 
             {/* Article Content */}
             <div className="max-w-none">
-              <div
-                className="text-slate-800 leading-relaxed text-lg space-y-4 [&>h1]:text-3xl [&>h1]:font-bold [&>h1]:mt-8 [&>h1]:mb-4 [&>h2]:text-2xl [&>h2]:font-semibold [&>h2]:mt-6 [&>h2]:mb-3 [&>h3]:text-xl [&>h3]:font-medium [&>h3]:mt-4 [&>h3]:mb-2 [&>p]:mb-4 [&>ul]:ml-6 [&>ul]:mb-4 [&>ol]:ml-6 [&>ol]:mb-4 [&>li]:mb-1"
-                dangerouslySetInnerHTML={{
-                  __html: (article.content || "")
-                    .replace(/^# (.*$)/gm, "<h1>$1</h1>")
-                    .replace(/^## (.*$)/gm, "<h2>$1</h2>")
-                    .replace(/^### (.*$)/gm, "<h3>$1</h3>")
-                    .replace(/^\* (.*$)/gm, "<li>$1</li>")
-                    .replace(/^- (.*$)/gm, "<li>$1</li>")
-                    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                    .replace(/\n\n/g, "</p><p>")
-                    .replace(/^(?!<[h|l|p])/gm, "<p>")
-                    .replace(/(?<!>)$/gm, "</p>")
-                    .replace(/<p><\/p>/g, "")
-                    .replace(/<p>(<h[1-6]>)/g, "$1")
-                    .replace(/(<\/h[1-6]>)<\/p>/g, "$1")
-                    .replace(/<p>(<li>)/g, "<ul>$1")
-                    .replace(/(<\/li>)<\/p>/g, "$1</ul>")
-                    .replace(/(<\/ul>)<ul>/g, "")
-                    .replace(/\n/g, "<br />"),
-                }}
-              />
+              {(article.content || "").split("\n\n").map((paragraph, index) => {
+                const content = paragraph.trim();
+                if (!content) return null;
+
+                // Handle headers
+                if (content.startsWith("# ")) {
+                  return (
+                    <h1
+                      key={index}
+                      className="text-3xl font-bold mt-8 mb-4 text-slate-900"
+                    >
+                      {content.substring(2)}
+                    </h1>
+                  );
+                }
+                if (content.startsWith("## ")) {
+                  return (
+                    <h2
+                      key={index}
+                      className="text-2xl font-semibold mt-6 mb-3 text-slate-900"
+                    >
+                      {content.substring(3)}
+                    </h2>
+                  );
+                }
+                if (content.startsWith("### ")) {
+                  return (
+                    <h3
+                      key={index}
+                      className="text-xl font-medium mt-4 mb-2 text-slate-900"
+                    >
+                      {content.substring(4)}
+                    </h3>
+                  );
+                }
+
+                // Handle lists
+                if (content.includes("\n- ") || content.includes("\n* ")) {
+                  const items = content
+                    .split("\n")
+                    .filter(
+                      (line) => line.startsWith("- ") || line.startsWith("* "),
+                    );
+                  return (
+                    <ul key={index} className="ml-6 mb-4 space-y-1">
+                      {items.map((item, itemIndex) => (
+                        <li key={itemIndex} className="text-slate-800">
+                          {item
+                            .substring(2)
+                            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")}
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                }
+
+                // Regular paragraphs
+                return (
+                  <div
+                    key={index}
+                    className="mb-4 text-lg leading-relaxed text-slate-800"
+                    dangerouslySetInnerHTML={{
+                      __html: content
+                        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                        .replace(/\n/g, "<br />"),
+                    }}
+                  />
+                );
+              })}
             </div>
 
             {/* Tags */}
