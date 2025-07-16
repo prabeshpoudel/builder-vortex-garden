@@ -1136,6 +1136,281 @@ const Admin = () => {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Predictions Management Tab */}
+          <TabsContent value="predictions" className="space-y-6">
+            <h2 className="text-2xl font-bold">User Predictions</h2>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>All Predictions</CardTitle>
+                <CardDescription>
+                  View and manage user predictions across all matches
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-2xl font-bold text-blue-600">
+                          {/* TODO: Replace with actual data */}
+                          142
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Total Predictions
+                        </div>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-2xl font-bold text-green-600">
+                          89
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Correct Predictions
+                        </div>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="text-2xl font-bold text-orange-600">
+                          62.7%
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Success Rate
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <div className="border rounded-lg">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>User</TableHead>
+                          <TableHead>Match</TableHead>
+                          <TableHead>Prediction</TableHead>
+                          <TableHead>Confidence</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Points</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {/* Sample predictions - replace with real data */}
+                        <TableRow>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium">Rajesh Shrestha</div>
+                              <div className="text-sm text-muted-foreground">
+                                rajesh@example.com
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="font-medium">Nepal vs UAE</div>
+                            <div className="text-sm text-muted-foreground">
+                              ACC Premier Cup
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">Home Win (180-165)</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge className="bg-green-500">High</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge className="bg-yellow-500">Pending</Badge>
+                          </TableCell>
+                          <TableCell>-</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium">Priya Gurung</div>
+                              <div className="text-sm text-muted-foreground">
+                                priya@example.com
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="font-medium">
+                              Kathmandu FC vs Pokhara
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              Nepal Premier League
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">Home Win (2-1)</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge className="bg-yellow-500">Medium</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge className="bg-green-500">Won</Badge>
+                          </TableCell>
+                          <TableCell>+15</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Site Settings Tab */}
+          <TabsContent value="settings" className="space-y-6">
+            <h2 className="text-2xl font-bold">Site Settings</h2>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>General Settings</CardTitle>
+                  <CardDescription>
+                    Configure basic site information and branding
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="siteName">Site Name</Label>
+                    <Input
+                      id="siteName"
+                      value={siteSettings.siteName}
+                      onChange={(e) =>
+                        setSiteSettings((prev) => ({
+                          ...prev,
+                          siteName: e.target.value,
+                        }))
+                      }
+                      placeholder="ScoreGuff"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="siteTagline">Site Tagline</Label>
+                    <Input
+                      id="siteTagline"
+                      value={siteSettings.siteTagline}
+                      onChange={(e) =>
+                        setSiteSettings((prev) => ({
+                          ...prev,
+                          siteTagline: e.target.value,
+                        }))
+                      }
+                      placeholder="Nepal's Sports News Hub"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="siteLogo">Site Logo URL</Label>
+                    <Input
+                      id="siteLogo"
+                      value={siteSettings.siteLogo}
+                      onChange={(e) =>
+                        setSiteSettings((prev) => ({
+                          ...prev,
+                          siteLogo: e.target.value,
+                        }))
+                      }
+                      placeholder="/logo.png"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="primaryColor">Primary Color</Label>
+                    <Input
+                      id="primaryColor"
+                      type="color"
+                      value={siteSettings.primaryColor}
+                      onChange={(e) =>
+                        setSiteSettings((prev) => ({
+                          ...prev,
+                          primaryColor: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="supportEmail">Support Email</Label>
+                    <Input
+                      id="supportEmail"
+                      type="email"
+                      value={siteSettings.supportEmail}
+                      onChange={(e) =>
+                        setSiteSettings((prev) => ({
+                          ...prev,
+                          supportEmail: e.target.value,
+                        }))
+                      }
+                      placeholder="support@scoreguff.com"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Social Media</CardTitle>
+                  <CardDescription>
+                    Configure social media links and integration
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label htmlFor="facebook">Facebook</Label>
+                    <Input
+                      id="facebook"
+                      value={siteSettings.socialMedia.facebook}
+                      onChange={(e) =>
+                        setSiteSettings((prev) => ({
+                          ...prev,
+                          socialMedia: {
+                            ...prev.socialMedia,
+                            facebook: e.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="https://facebook.com/scoreguff"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="twitter">Twitter</Label>
+                    <Input
+                      id="twitter"
+                      value={siteSettings.socialMedia.twitter}
+                      onChange={(e) =>
+                        setSiteSettings((prev) => ({
+                          ...prev,
+                          socialMedia: {
+                            ...prev.socialMedia,
+                            twitter: e.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="https://twitter.com/scoreguff"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="instagram">Instagram</Label>
+                    <Input
+                      id="instagram"
+                      value={siteSettings.socialMedia.instagram}
+                      onChange={(e) =>
+                        setSiteSettings((prev) => ({
+                          ...prev,
+                          socialMedia: {
+                            ...prev.socialMedia,
+                            instagram: e.target.value,
+                          },
+                        }))
+                      }
+                      placeholder="https://instagram.com/scoreguff"
+                    />
+                  </div>
+                  <Button className="w-full">Save Settings</Button>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
