@@ -113,6 +113,75 @@ const Fixtures = () => {
     setIsMatchDialogOpen(true);
   };
 
+  const openPredictionDialog = (game: Game) => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to make predictions",
+        variant: "destructive",
+      });
+      return;
+    }
+    setSelectedGameForPrediction(game);
+    setIsPredictionDialogOpen(true);
+    setPredictionFormData({
+      winner: "",
+      homeScore: "",
+      awayScore: "",
+      confidence: "medium",
+      notes: "",
+    });
+  };
+
+  const handlePredictionSubmit = async () => {
+    if (!selectedGameForPrediction || !predictionFormData.winner) {
+      toast({
+        title: "Error",
+        description: "Please select a winner for your prediction",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // TODO: Make actual API call to save prediction
+      const predictionData = {
+        matchId: selectedGameForPrediction.id,
+        matchTitle: `${selectedGameForPrediction.homeTeam} vs ${selectedGameForPrediction.awayTeam} - ${selectedGameForPrediction.league}`,
+        prediction: {
+          winner: predictionFormData.winner as "home" | "away" | "draw",
+          homeScore: predictionFormData.homeScore
+            ? parseInt(predictionFormData.homeScore)
+            : undefined,
+          awayScore: predictionFormData.awayScore
+            ? parseInt(predictionFormData.awayScore)
+            : undefined,
+          confidence: predictionFormData.confidence as
+            | "low"
+            | "medium"
+            | "high",
+        },
+        notes: predictionFormData.notes,
+      };
+
+      console.log("Saving prediction:", predictionData);
+
+      toast({
+        title: "Prediction saved!",
+        description: `Your prediction for ${selectedGameForPrediction.homeTeam} vs ${selectedGameForPrediction.awayTeam} has been recorded.`,
+      });
+
+      setIsPredictionDialogOpen(false);
+    } catch (error) {
+      console.error("Error saving prediction:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save your prediction. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const castVote = (gameId: string, team: "home" | "away" | "draw") => {
     setFanPoll((prev) => ({
       ...prev,
