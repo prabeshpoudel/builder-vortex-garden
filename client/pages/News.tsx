@@ -250,9 +250,11 @@ const News = () => {
                   </Badge>
                 </div>
                 <CardHeader>
-                  <CardTitle className="text-xl leading-tight hover:text-scoreguff-blue transition-colors cursor-pointer">
-                    {article.title}
-                  </CardTitle>
+                  <Link to={`/news/${article.slug}`}>
+                    <CardTitle className="text-xl leading-tight hover:text-scoreguff-blue transition-colors cursor-pointer">
+                      {article.title}
+                    </CardTitle>
+                  </Link>
                   <CardDescription className="text-base">
                     {article.excerpt}
                   </CardDescription>
@@ -273,10 +275,12 @@ const News = () => {
                       {article.readTime}
                     </span>
                   </div>
-                  <Button className="w-full bg-scoreguff-blue hover:bg-scoreguff-blue/90">
-                    Read Full Article
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Button>
+                  <Link to={`/news/${article.slug}`}>
+                    <Button className="w-full bg-scoreguff-blue hover:bg-scoreguff-blue/90">
+                      Read Full Article
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}
@@ -310,9 +314,11 @@ const News = () => {
                   </Badge>
                 </div>
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-lg leading-tight hover:text-scoreguff-blue transition-colors cursor-pointer line-clamp-2">
-                    {article.title}
-                  </CardTitle>
+                  <Link to={`/news/${article.slug}`}>
+                    <CardTitle className="text-lg leading-tight hover:text-scoreguff-blue transition-colors cursor-pointer line-clamp-2">
+                      {article.title}
+                    </CardTitle>
+                  </Link>
                   <CardDescription className="text-sm line-clamp-2">
                     {article.excerpt}
                   </CardDescription>
@@ -326,9 +332,11 @@ const News = () => {
                     <span className="text-xs text-scoreguff-blue">
                       {article.readTime}
                     </span>
-                    <Button size="sm" variant="outline" className="text-xs">
-                      Read More
-                    </Button>
+                    <Link to={`/news/${article.slug}`}>
+                      <Button size="sm" variant="outline" className="text-xs">
+                        Read More
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
