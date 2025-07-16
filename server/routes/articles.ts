@@ -152,6 +152,7 @@ export const handleCreateArticle: RequestHandler = async (
       return;
     }
 
+    console.log("Creating article with data:", req.body);
     const articleData = createArticleSchema.parse(req.body);
 
     // Generate slug from title
