@@ -230,28 +230,37 @@ const Admin = () => {
     "Tournaments",
   ];
 
-  const handleAddArticle = () => {
+  const handleAddArticle = async () => {
     if (articleFormData.title && articleFormData.content) {
-      const newArticle: Article = {
-        ...articleFormData,
-        id: Date.now().toString(),
-        publishedAt: new Date().toISOString(),
-        views: 0,
-        comments: 0,
-      } as Article;
-      setArticles([newArticle, ...articles]);
-      setArticleFormData({
-        title: "",
-        excerpt: "",
-        content: "",
-        category: "",
-        author: "",
-        status: "draft",
-        isPinned: false,
-        isTrending: false,
-        isNepal: false,
-      });
-      setIsAddArticleDialogOpen(false);
+      try {
+        await addArticle({
+          title: articleFormData.title,
+          excerpt: articleFormData.excerpt,
+          content: articleFormData.content,
+          category: articleFormData.category,
+          status: articleFormData.status,
+          isPinned: articleFormData.isPinned,
+          isTrending: articleFormData.isTrending,
+          isNepal: articleFormData.isNepal,
+          tags: [], // Add tags support later
+        });
+
+        setArticleFormData({
+          title: "",
+          excerpt: "",
+          content: "",
+          category: "",
+          author: "",
+          status: "draft",
+          isPinned: false,
+          isTrending: false,
+          isNepal: false,
+        });
+        setIsAddArticleDialogOpen(false);
+      } catch (error) {
+        console.error("Failed to add article:", error);
+        // TODO: Show error toast
+      }
     }
   };
 
