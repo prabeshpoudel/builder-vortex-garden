@@ -301,9 +301,9 @@ const ArticleView = () => {
             </div>
 
             {/* Article Content */}
-            <div className="prose prose-lg max-w-none">
+            <div className="max-w-none">
               <div
-                className="text-slate-800 leading-relaxed"
+                className="text-slate-800 leading-relaxed text-lg space-y-4 [&>h1]:text-3xl [&>h1]:font-bold [&>h1]:mt-8 [&>h1]:mb-4 [&>h2]:text-2xl [&>h2]:font-semibold [&>h2]:mt-6 [&>h2]:mb-3 [&>h3]:text-xl [&>h3]:font-medium [&>h3]:mt-4 [&>h3]:mb-2 [&>p]:mb-4 [&>ul]:ml-6 [&>ul]:mb-4 [&>ol]:ml-6 [&>ol]:mb-4 [&>li]:mb-1"
                 dangerouslySetInnerHTML={{
                   __html: (article.content || "").replace(/\n/g, "<br />"),
                 }}
