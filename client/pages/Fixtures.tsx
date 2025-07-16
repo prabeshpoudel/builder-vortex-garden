@@ -476,17 +476,27 @@ const Fixtures = () => {
                           </div>
                         </div>
 
-                        <div className="flex gap-2">
+                        <div className="space-y-2">
                           <Button
-                            className="flex-1 bg-scoreguff-blue hover:bg-scoreguff-blue/90"
-                            onClick={() => openMatchDialog(game)}
+                            className="w-full bg-scoreguff-blue hover:bg-scoreguff-blue/90"
+                            onClick={() => openPredictionDialog(game)}
                           >
-                            <Eye className="h-4 w-4 mr-2" />
-                            Match Details
+                            <Trophy className="h-4 w-4 mr-2" />
+                            Make Prediction
                           </Button>
-                          <Button variant="outline" size="icon">
-                            <Star className="h-4 w-4" />
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              variant="outline"
+                              className="flex-1"
+                              onClick={() => openMatchDialog(game)}
+                            >
+                              <Eye className="h-4 w-4 mr-2" />
+                              Details
+                            </Button>
+                            <Button variant="outline" size="icon">
+                              <Star className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
