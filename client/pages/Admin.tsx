@@ -430,18 +430,29 @@ const Admin = () => {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="news" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="news" className="flex items-center gap-2">
               <Newspaper className="h-4 w-4" />
-              News Management
+              News
             </TabsTrigger>
             <TabsTrigger value="fixtures" className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
-              Match Center
+              Matches
             </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              User Management
+              Users
+            </TabsTrigger>
+            <TabsTrigger
+              value="predictions"
+              className="flex items-center gap-2"
+            >
+              <Trophy className="h-4 w-4" />
+              Predictions
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Settings
             </TabsTrigger>
           </TabsList>
 
