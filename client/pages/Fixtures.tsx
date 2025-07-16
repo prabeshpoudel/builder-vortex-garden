@@ -43,6 +43,11 @@ import {
   ThumbsUp,
 } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/hooks/use-toast";
 
 const Fixtures = () => {
   const { games, getUpcomingGames, getLiveGames, getCompletedGames } =
@@ -55,6 +60,17 @@ const Fixtures = () => {
   const [fanPoll, setFanPoll] = useState<{
     [key: string]: { home: number; away: number; draw?: number };
   }>({});
+  const [isPredictionDialogOpen, setIsPredictionDialogOpen] = useState(false);
+  const [selectedGameForPrediction, setSelectedGameForPrediction] =
+    useState<Game | null>(null);
+  const [predictionFormData, setPredictionFormData] = useState({
+    winner: "",
+    homeScore: "",
+    awayScore: "",
+    confidence: "medium",
+    notes: "",
+  });
+  const { user, isAuthenticated } = useAuth();
 
   const upcomingGames = getUpcomingGames();
   const liveGames = getLiveGames();
