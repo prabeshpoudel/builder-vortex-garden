@@ -12,6 +12,7 @@ import Fixtures from "./pages/Fixtures";
 import Leaderboard from "./pages/Leaderboard";
 import Analytics from "./pages/Analytics";
 import News from "./pages/News";
+import ArticleView from "./pages/ArticleView";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Admin from "./pages/Admin";
