@@ -5,7 +5,7 @@ export interface User {
   email: string;
   password: string; // hashed
   name: string;
-  role: "user" | "admin";
+  role: "user" | "admin" | "super_admin";
   avatar?: string;
   location: string;
   joinedDate: string;
@@ -110,6 +110,26 @@ export interface Comment {
   likes: number;
   isEdited: boolean;
   status: "active" | "hidden" | "deleted";
+}
+
+export interface Prediction {
+  id: string;
+  userId: string;
+  userName: string;
+  matchId: string;
+  matchTitle: string;
+  prediction: {
+    winner: "home" | "away" | "draw";
+    homeScore?: number;
+    awayScore?: number;
+    confidence: "low" | "medium" | "high";
+  };
+  createdAt: string;
+  result?: {
+    isCorrect: boolean;
+    points: number;
+  };
+  status: "pending" | "won" | "lost" | "void";
 }
 
 // Create hashed passwords
