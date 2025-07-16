@@ -1087,6 +1087,7 @@ const Admin = () => {
                         <TableHead>Date & Time</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Venue</TableHead>
+                        <TableHead>Predictions</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
