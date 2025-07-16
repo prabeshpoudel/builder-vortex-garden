@@ -48,13 +48,13 @@
     --sidebar-border: 217.2 32.6% 17.5%;
     --sidebar-ring: 217 91% 60%;
 
-    /* Custom ScoreGuff brand colors */
-    --scoreguff-blue: 217 91% 60%;
-    --scoreguff-green: 142 69% 58%;
+    /* Custom ScoreGuff brand colors - Red, Blue, White theme */
+    --scoreguff-blue: 220 100% 50%;
+    --scoreguff-red: 0 100% 50%;
     --scoreguff-dark: 222.2 84% 4.9%;
-    --scoreguff-gold: 45 93% 58%;
-    --scoreguff-gradient-start: 217 91% 60%;
-    --scoreguff-gradient-end: 142 69% 58%;
+    --scoreguff-white: 0 0% 100%;
+    --scoreguff-gradient-start: 0 100% 50%;
+    --scoreguff-gradient-end: 220 100% 50%;
   }
 
   .dark {
