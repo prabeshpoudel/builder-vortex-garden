@@ -153,8 +153,24 @@ const Admin = () => {
   const [isAddGameDialogOpen, setIsAddGameDialogOpen] = useState(false);
   const [isEditGameDialogOpen, setIsEditGameDialogOpen] = useState(false);
   const [isAddArticleDialogOpen, setIsAddArticleDialogOpen] = useState(false);
+  const [isSiteSettingsDialogOpen, setIsSiteSettingsDialogOpen] =
+    useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
+
+  // Site settings state
+  const [siteSettings, setSiteSettings] = useState({
+    siteName: "ScoreGuff",
+    siteTagline: "Nepal's Sports News Hub",
+    siteLogo: "/placeholder.svg",
+    primaryColor: "#3B82F6",
+    supportEmail: "support@scoreguff.com",
+    socialMedia: {
+      facebook: "",
+      twitter: "",
+      instagram: "",
+    },
+  });
 
   const [gameFormData, setGameFormData] = useState<Partial<Game>>({
     homeTeam: "",
