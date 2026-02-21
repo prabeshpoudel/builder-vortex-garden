@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from "url";
 import { handleDemo } from "./routes/demo";
 
 // Authentication routes
@@ -62,6 +63,8 @@ import {
   optionalAuth,
 } from "./middleware/auth";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 export function createServer(isDev = false) {
   const app = express();
 
@@ -72,7 +75,7 @@ export function createServer(isDev = false) {
 
   // Serve static files from the frontend build in production only.
   // In dev, Vite serves the SPA and this Express app only handles /api routes.
-  const frontendPath = path.join(__dirname, "../dist/spa");
+  const frontendPath = path.resolve(process.cwd(), "dist/spa");
   if (!isDev) {
     app.use(express.static(frontendPath));
   }
