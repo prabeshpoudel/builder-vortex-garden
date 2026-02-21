@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
+import { fileURLToPath } from "url";
 import { handleDemo } from "./routes/demo";
 
 // Authentication routes
@@ -62,7 +63,9 @@ import {
   optionalAuth,
 } from "./middleware/auth";
 
-export function createServer() {
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export function createServer(isDev = false) {
   const app = express();
 
   // Middleware
@@ -70,9 +73,12 @@ export function createServer() {
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-  // Serve static files from the frontend build
-  const frontendPath = path.join(__dirname, "../dist/spa");
-  app.use(express.static(frontendPath));
+  // Serve static files from the frontend build in production only.
+  // In dev, Vite serves the SPA and this Express app only handles /api routes.
+  const frontendPath = path.resolve(process.cwd(), "dist/spa");
+  if (!isDev) {
+    app.use(express.static(frontendPath));
+  }
 
   // Health check
   app.get("/api/ping", (_req, res) => {
@@ -243,9 +249,14 @@ export function createServer() {
   );
 
   // SPA fallback - serve index.html for all non-API routes
-  app.get("*", (req, res) => {
+  app.get("*", (req, res, next) => {
     // Only serve index.html for non-API routes
     if (!req.path.startsWith("/api")) {
+      if (isDev) {
+        // Let Vite handle HTML/non-API routes in development.
+        next();
+        return;
+      }
       res.sendFile(path.join(frontendPath, "index.html"));
     } else {
       // API route not found
