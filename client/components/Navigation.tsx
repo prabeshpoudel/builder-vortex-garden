@@ -59,7 +59,7 @@ const Navigation = () => {
       : []),
     ...(isAuthenticated &&
     user &&
-    (user.role === "admin" || user.role === "super_admin")
+    (user.role === "admin")
       ? [{ href: "/admin", label: "Admin Panel", icon: Settings }]
       : []),
   ];
