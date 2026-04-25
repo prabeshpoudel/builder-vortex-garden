@@ -1,59 +1,58 @@
 import "./global.css";
-
-import { Toaster } from "@/components/ui/toaster";
 import { createRoot } from "react-dom/client";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import Dashboard from "./pages/Dashboard";
-import Fixtures from "./pages/Fixtures";
-import Leaderboard from "./pages/Leaderboard";
-import News from "./pages/News";
-import ArticleView from "./pages/ArticleView";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Admin from "./pages/Admin";
-import NotFound from "./pages/NotFound";
-import Navigation from "./components/Navigation";
-import { AuthProvider } from "./contexts/AuthContext";
-import { AdminProvider } from "./contexts/AdminContext";
-import { UserManagementProvider } from "./contexts/UserManagementContext";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Home from "@/pages/Home";
+import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
+import Matches from "@/pages/Matches";
+import MatchDetails from "@/pages/MatchDetails";
+import Predictions from "@/pages/Predictions";
+import News from "@/pages/News";
+import NewsDetails from "@/pages/NewsDetails";
+import NotFound from "@/pages/NotFound";
+import { AuthProvider } from "@/context/AuthContext";
+import { MatchProvider } from "@/context/MatchContext";
+import { PredictionProvider } from "@/context/PredictionContext";
+import { NewsProvider } from "@/context/NewsContext";
+import { RequireAdmin, RequireAuth } from "@/components/common/RouteGuards";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminMatchManagement from "@/pages/admin/AdminMatchManagement";
+import AdminPredictionManagement from "@/pages/admin/AdminPredictionManagement";
+import AdminUserPredictionAnalytics from "@/pages/admin/AdminUserPredictionAnalytics";
+import AdminNewsManagement from "@/pages/admin/AdminNewsManagement";
+import AdminSettings from "@/pages/admin/AdminSettings";
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+function App() {
+  return (
     <AuthProvider>
-      <AdminProvider>
-        <UserManagementProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
+      <MatchProvider>
+        <PredictionProvider>
+          <NewsProvider>
             <BrowserRouter>
-              <Navigation />
               <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/fixtures" element={<Fixtures />} />
-                <Route path="/predictions" element={<Fixtures />} />
-                <Route path="/leaderboard" element={<Leaderboard />} />
-
-                <Route path="/news" element={<News />} />
-                <Route path="/news/:slug" element={<ArticleView />} />
-                <Route path="/admin" element={<Admin />} />
+                <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="/matches" element={<Matches />} />
+                <Route path="/matches/:id" element={<MatchDetails />} />
+                <Route path="/predictions" element={<RequireAuth><Predictions /></RequireAuth>} />
+                <Route path="/news" element={<News />} />
+                <Route path="/news/:id" element={<NewsDetails />} />
+
+                <Route path="/admin" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
+                <Route path="/admin/matches" element={<RequireAdmin><AdminMatchManagement /></RequireAdmin>} />
+                <Route path="/admin/predictions" element={<RequireAdmin><AdminPredictionManagement /></RequireAdmin>} />
+                <Route path="/admin/user-predictions" element={<RequireAdmin><AdminUserPredictionAnalytics /></RequireAdmin>} />
+                <Route path="/admin/news" element={<RequireAdmin><AdminNewsManagement /></RequireAdmin>} />
+                <Route path="/admin/settings" element={<RequireAdmin><AdminSettings /></RequireAdmin>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
-          </TooltipProvider>
-        </UserManagementProvider>
-      </AdminProvider>
+          </NewsProvider>
+        </PredictionProvider>
+      </MatchProvider>
     </AuthProvider>
-  </QueryClientProvider>
-);
+  );
+}
 
 createRoot(document.getElementById("root")!).render(<App />);

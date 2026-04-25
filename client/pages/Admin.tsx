@@ -101,7 +101,7 @@ const Admin = () => {
   if (
     !isAuthenticated ||
     !user ||
-    (user.role !== "admin" && user.role !== "super_admin")
+    user.role !== "admin"
   ) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30 flex items-center justify-center">
@@ -252,6 +252,8 @@ const Admin = () => {
         isTrending: articleFormData.isTrending,
         isNepal: articleFormData.isNepal,
         tags: [], // Add tags support later
+        isBreaking: false,
+        readTime: 5,
       });
 
       setArticleFormData({
